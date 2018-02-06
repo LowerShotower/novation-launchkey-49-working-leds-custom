@@ -4,5 +4,6 @@ Main grid in mix mode has two rows i.e. 16 pads. You can rec, start,stop clips b
 To change controllers behaviour i use several modes: Mix, Drumpads, Device, Cut, Copy, Edit, Solo, Mute, Arm, Select.
 Mix: simple grid to launch, stop, rec, del clips. Used from start.
 Drumpads: simple drumpads for drumming. On as inControl_pad_button is pressed.
-Device: manage with device section. Starts on press fb1(fader button 1). first_row of grid - remote_control's pages. Second row - devices. Up to 8 devices. Knobs manage remote_control's parameters. Rb1 (round button 1) used to add first or replace current device. If loop+rb1 - it will add new one after currently selected device. 
+Device: manage with device section. Starts on press fb1(fader button 1). first_row of grid - remote_control's pages. Second row - devices. Up to 8 devices. Knobs manage remote_control's parameters. Rb1 (round button 1) used to add first or replace current device. If loop+rb1 - it will add new one after currently selected device. Rb2 delete current device (but it still work not ok, sometimes it doesn't delete[only after selecting a device with mouse in the bitwig it begin to work.])
+Edit: used to navigate in Popup browser. Use knobs, grid buttons for this. Rb1, rb2 - chancel, commit.
 
