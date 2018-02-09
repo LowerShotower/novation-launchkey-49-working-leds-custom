@@ -34,8 +34,13 @@ var TempMode =
    CUT:15,
    COPY:16,
    DEVICE:17,
-    FADERS:18
+    FADERS:18,
+    COLOR_RGB:19
 };
+
+
+
+
 
 var TEMPMODE = -1;
 var numTracks; //used to know current number of tracks. Up to 64.
@@ -52,6 +57,7 @@ var numDevices = -1;
 var contentTypeIndex=0;
 var sendBankIndex = 0;
 //var isInc = false;
+var isRGBOn = false;
 
 var entryCount = {};
 var isPopup = false;
@@ -74,8 +80,9 @@ var isMatrixStopped = initArray(0, 8);
 var isSelected = initArray(0, 8);
 var isQueuedForStop = initArray(0, 8);
 var trackExists = initArray(0, 8);
-var sendExists = initArray (0, 8);
-
+var trackColorRGB = [[,,],[,,],[,,],[,,],[,,],[,,],[,,],[,,]];
+var trackColor = initArray(0,8);
+//var sendExists = initArray (0, 8);
 
 var vuMeter = initArray(0, 8);
 var masterVuMeter = 0;
@@ -102,6 +109,11 @@ var activePage = null;
 var noteOn = initArray(false, 128);
 var WRITEOVR = false;
 
+
+
+
+
+
 host.defineController("MyCompany", "MyController", "1.0", "1269fa00-fe0b-11e7-8f1a-0800200c9a66");
 host.defineMidiPorts(2, 2);
 host.addDeviceNameBasedDiscoveryPair(["Launchkey MIDI","MIDIIN2 (Launchkey MIDI)"], ["Launchkey MIDI","LMIDIOUT2 (Launchkey MIDI)"]);
@@ -114,6 +126,10 @@ load("launchpad_page.js"); // defines the page type which is used for the differ
 load("launchpad_grid.js"); // draws the main clip launcher and other pages such as volume, pan, sends, and user controls
 //load("launchpad_keys.js"); // draws the keys as set in launchpad_notemap and places them across the pads
 //load("launchpad_step_sequencer.js"); // everything to do with the step sequencer
+
+
+
+
 
 
 // activePage is the page displayed on the Launchpad, the function changes the page and displays popups
@@ -139,6 +155,10 @@ function setActivePage(page)
 }
 
 
+
+
+
+
 function getEntryCountObserverFunc(keyName)
 {
     return function(value)
@@ -155,6 +175,18 @@ function getTrackObserverFunc(track, varToStore)
       varToStore[track] = value;
    }
 }
+
+function getTrackColorObserverFunc(track, varToStore)
+{
+    return function(value1, value2, value3)
+    {
+        varToStore[track][0] = value1; //R
+        varToStore[track][1] = value2; //G
+        varToStore[track][2] = value3;  //B
+    }
+}
+
+
 
 function getGridObserverFunc(track, varToStore)
 {
@@ -177,6 +209,12 @@ function getGridObserverFuncAll(track, varToStore)
        }
    }
 }
+
+
+
+
+
+
 
 // The init function gets called when initializing by Bitwig
 function init()
@@ -207,9 +245,15 @@ function init()
    cursorDevice_0 = cursorTrack_0.createCursorDevice();
 
 
-   trackBank_0 = host.createTrackBankSection(8, 0, 0); // need to be deleted. script uses trackBank
-   cursorRCPage = cursorDevice_0.createCursorRemoteControlsPage(8);
+  cursorRCPage = cursorDevice_0.createCursorRemoteControlsPage(8);
    cursorDeviceBrowser = cursorDevice_0.createDeviceBrowser(40,40);
+    // a Trackbank is the tracks, sends and scenes being controlled, these arguments are set to 8,2,8 in the
+    // launchpad_constants.js file changing them will change the size of the grid displayed on the Bitwig Clip Launcher
+    trackBank = host.createMainTrackBank(NUM_TRACKS, NUM_SENDS, NUM_SCENES);
+    trackBankAll = host.createMainTrackBank(NUM_TRACKS_ALL, 0 , 2);
+
+
+
 
 
    //Block of different popup browser steps
@@ -233,26 +277,22 @@ function init()
     //popupBrowser.tagColumn().entryCount().addValueObserver(getEntryCountObserverFunc(6));
     entryCount[6] = 100;
 
-    popupBrowser.resultsColumn().entryCount().addValueObserver(getEntryCountObserverFunc(7));
+    popupBrowser.resultsColumn().entryCount().addValueObserver( getEntryCountObserverFunc(7) );
 
 
-    popupBrowser.exists().addValueObserver(function(value){isPopup = value;
-    //println(isPopup);
-    });
-
-    transport.addLauncherOverdubObserver(function(state){
-        WRITEOVR=state;
-   });
-
-   // a Trackbank is the tracks, sends and scenes being controlled, these arguments are set to 8,2,8 in the
-    // launchpad_constants.js file changing them will change the size of the grid displayed on the Bitwig Clip Launcher
-   trackBank = host.createMainTrackBank(NUM_TRACKS, NUM_SENDS, NUM_SCENES);
-   trackBankAll = host.createMainTrackBank(NUM_TRACKS_ALL, 0 , 2);
+    popupBrowser.exists().addValueObserver(function(value){ isPopup = value; });
 
 
-   trackBank.addChannelCountObserver(function(value){numTracks = value;println(numTracks);});//?????????????
+    transport.addLauncherOverdubObserver(function(state){ WRITEOVR=state; });
 
-//observers to track all the clips in two scenes
+
+    trackBank.addChannelCountObserver(function(value){numTracks = value;/*println(numTracks);*/});
+
+
+
+
+
+    //observers to track all the clips in two scenes
    for (var t = 0; t < NUM_TRACKS_ALL; t++) 
    {
    		var clipLauncherAll = trackBankAll.getChannel(t).getClipLauncherSlots();
@@ -261,29 +301,26 @@ function init()
    }
 
 
+
+
    // This scrolls through the controllable tracks and clips and picks up the info from Bitwig to later display/control, it stores them in the arrays declared above
    for(var t=0; t<NUM_TRACKS; t++)
    {
       var track = trackBank.getChannel(t);
 
+      track.sendBank().itemCount().addValueObserver(function (value){numSends = value;});
 
-       track.sendBank().itemCount().addValueObserver(function (value){
-           numSends = value;});
+      for (var sendIndex = 0; sendIndex < NUM_SENDS; sendIndex++)
+      { //  track.sendBank().getItemAt(sendIndex).addValueObserver(63, getTrackObserverFunc(t, sends));//63 is range to scale value
+      }
 
-       for (var sendIndex = 0; sendIndex < NUM_SENDS; sendIndex++)
-       {
-
-         //  track.sendBank().getItemAt(sendIndex).addValueObserver(63, getTrackObserverFunc(t, sends));//63 is range to scale value
-       }
-
-
-
-      track.getVolume().addValueObserver(8, getTrackObserverFunc(t, volume));
-      track.getPan().addValueObserver(userVarPans, getTrackObserverFunc(t, pan));
-
+      //track.getVolume().addValueObserver(8, getTrackObserverFunc(t, volume));
+      //track.getPan().addValueObserver(userVarPans, getTrackObserverFunc(t, pan));
       track.getMute().addValueObserver(getTrackObserverFunc(t, mute));
       track.getSolo().addValueObserver(getTrackObserverFunc(t, solo));
       track.getArm().addValueObserver(getTrackObserverFunc(t, arm));
+      track.color().addValueObserver(getTrackColorObserverFunc(t, trackColorRGB));
+
       track.getIsMatrixStopped().addValueObserver(getTrackObserverFunc(t, isMatrixStopped));
       track.exists().addValueObserver(getTrackObserverFunc(t, trackExists));
       track.addVuMeterObserver(7, -1, true, getTrackObserverFunc(t, vuMeter));
@@ -297,28 +334,27 @@ function init()
       clipLauncher.addIsRecordingObserver(getGridObserverFunc(t, isRecording));
       clipLauncher.addIsQueuedObserver(getGridObserverFunc(t, isQueued));
       clipLauncher.addIsRecordingQueuedObserver(getGridObserverFunc(t, isRecordingQueued));
-      clipLauncher.addIsStopQueuedObserver(getGridObserverFunc(t, isStopQueued)); 
-
+      clipLauncher.addIsStopQueuedObserver(getGridObserverFunc(t, isStopQueued));
    }
 
+
+
+
    deviceBank_0.itemCount().addValueObserver(function (value){
-       numDevices= value;
-   },0);
+       numDevices= value;}, 0 );
 
-    cursorRCPage.selectedPageIndex().addValueObserver(function (value){
-       selectedRCPage= value;
-    }, -1);
+   cursorRCPage.selectedPageIndex().addValueObserver(function (value){
+       selectedRCPage= value;}, -1 );
 
-    cursorRCPage.pageNames().addValueObserver(function (value){
-        numRCPages= value.length;
-    });
-    cursorDevice_0.position().addValueObserver(function (value){
-        cursorDevicePosition = value;
-    }, -1);
+   cursorRCPage.pageNames().addValueObserver(function (value){
+        numRCPages= value.length;} );
 
-    cursorDevice_0.name().addValueObserver(function (value){
-        cursorDeviceName = value;
-    });
+   cursorDevice_0.position().addValueObserver(function (value){
+        cursorDevicePosition = value;}, -1 );
+
+   cursorDevice_0.name().addValueObserver(function (value){
+        cursorDeviceName = value;} );
+
 
 
    // These next 4 pick up whether the Clip Launcher can be moved
@@ -355,13 +391,14 @@ function init()
       masterVuMeter = level;
    });
 
-   // Picks up the controllable knobs, buttons which have been set via "Learn Controller Assignment". There are 24 set here because there are 3 pages of user controls with 8 assignable controls on each
+   // Picks up the controllable knobs, buttons which have been set via "Learn Controller Assignment". There are 24 set
+    // here because there are 3 pages of user controls with 8 assignable controls on each
    userControls_0 = host.createUserControls(24);
 
+    //?????????????????????????????????????????????????????????????????????????????????????????
    for(var u=0; u<24; u++)
    {
       var control = userControls_0.getControl(u);
-
       control.addValueObserver(8, getTrackObserverFunc(u, userValue));
       control.setLabel("U" + (u+1));
    }
@@ -372,15 +409,17 @@ function init()
    //cursorClip.addStepDataObserver(seqPage.onStepExists);
    //cursorClip.scrollToKey(0);
 
-
+    //?????????????????????????????????????????????????????????????????????????????????????????
    for(var p=0; p<8; p++)
    {
       userControls_0.getControl(p).setLabel("User " + (p + 1));
    }
 
+
    // Turn extended mode on.
    host.getMidiOutPort(1).sendMidi(159, 12, 127);
    updateIndications();
+
 
     // Call resetdevice which clears all the lights
    resetDevice();
@@ -402,14 +441,17 @@ function resetDevice()
 
 
 
+
 function updateIndications()
 {
    for(var i=0; i<8; i++)
    {
       //cursorDevice_0.getParameter(i).setIndication(incontrol_knobs);
-      trackBank_0.getTrack(i).getVolume().setIndication(incontrol_mix);
+      trackBank.getTrack(i).getVolume().setIndication(incontrol_mix);
    }
 }
+
+
 
 
 function exit()
@@ -417,6 +459,8 @@ function exit()
    sendMidi(0x90, 0x0C, 0x00);
    resetDevice();
 }
+
+
 
 
 // Clears all the lights
@@ -429,11 +473,15 @@ function clear()
 }
 
 
+
+
 function flush()
 {
    activePage.updateOutputState();
    flushLEDs();
 }
+
+
 
 
 function onMidi0(status, data1, data2)
@@ -445,6 +493,7 @@ function onMidi0(status, data1, data2)
        activePage.onPots(incontrol_knobs, data1, data2);
    }
 }
+
 
 
 
@@ -532,7 +581,7 @@ function onMidi1(status, data1, data2)
 		     var column = data1 & 0xF;
 		         
 		     ////println("row = " + row + "col = " + column)
-		         
+
 		     if (column < 8)
 		     {
 		         activePage.onGridButton(row, column, data2 > 0);
@@ -583,6 +632,7 @@ function setCellLED(column,row, colour)
 
 
 
+
 // arrays of 80 buttons, the main 64 pads and the 8 at the top and 8 at side. Pending is used for lights to be sent, active contains the lights already on
 var pendingLEDs = new Array(80);
 var activeLEDs = new Array(80);
@@ -622,18 +672,18 @@ function flushLEDs()
         {
            var column = i & 0x7;
            var row = i >> 3;
-          host.getMidiOutPort(1).sendMidi(0x9F, 96 + row*16 + column, colour);
-          if (colour == Colour.RED_FLASHING){
-          	host.getMidiOutPort(1).sendMidi(0x92, 96 + row*16 + column, Colour.RED_FULL);
-          }  else if (colour == Colour.AMBER_FLASHING){
-          	host.getMidiOutPort(1).sendMidi(0x92, 96 + row*16 + column, Colour.AMBER_FULL);
-          } else if (colour == Colour.YELLOW_FLASHING){
-          	host.getMidiOutPort(1).sendMidi(0x92, 96 + row*16 + column, Colour.YELLOW_FULL);
-          } else if (colour == Colour.GREEN_FLASHING){
-          	host.getMidiOutPort(1).sendMidi(0x92, 96 + row*16 + column, Colour.GREEN_FULL);
-          }
-        }
-        else if (i>=64 && i < 66)    // Right buttons
+
+           if (colour == Colour.RED_FLASHING||colour == Colour.AMBER_FLASHING||colour == Colour.YELLOW_FLASHING||colour == Colour.GREEN_FLASHING)
+           {
+               host.getMidiOutPort(1).sendMidi(0x92, 96 + row*16 + column, colour);
+           }
+           else
+           {
+               host.getMidiOutPort(1).sendMidi(0x9F, 96 + row*16 + column, colour);
+           }
+       }
+
+       else if (i>=64 && i < 66)    // Right buttons
         {
            host.getMidiOutPort(1).sendMidi(0x9F, 96 + 8 + (i - 64) * 16, colour);
         }

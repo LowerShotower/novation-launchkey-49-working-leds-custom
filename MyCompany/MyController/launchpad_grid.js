@@ -19,6 +19,7 @@ gridPage.updateOutputState = function()
 };
 
 
+
 //stop/plaay/loop etc section, incontrol section, fader buttons section-------------------------------------------------
 gridPage.onOtherButton = function(buttonId, isPressed)
 {
@@ -193,6 +194,22 @@ gridPage.onOtherButton = function(buttonId, isPressed)
 	 		break;
 
 	 		case OtherButton.FB3:
+                if (isPressed) {
+                    if (TEMPMODE != TempMode.COLOR_RGB) {
+                        isRGBOn = true;
+                        this.setTempMode(TempMode.COLOR_RGB);
+                        host.showPopupNotification("COLOR: RGB");
+
+                    }
+                    else {
+                        isRGBOn = false;
+                        this.setTempMode(TempMode.OFF);
+                        host.showPopupNotification("COLOR: SIMPLE");
+
+
+                    }
+                }
+
 	 		break;
 
 	 		case OtherButton.FB4:
@@ -287,6 +304,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
 
 
 
+
 // used to insert code in makescrollpot function instead func2----------------------------------------------------------
 gridPage.scrollToNext = function (knInd) {
 
@@ -326,6 +344,9 @@ gridPage.scrollToNext = function (knInd) {
             break;
 	}
 };
+
+
+
 
 // used to insert code in makescrollpot function instead func1----------------------------------------------------------
 gridPage.scrollToPrevious = function (knInd) {
@@ -403,6 +424,9 @@ gridPage.makeScrollPot = function () {
 gridPage.scrollPot = gridPage.makeScrollPot();
 
 
+
+
+
 //knobs actions --------------------------------------------------------------------------------------------------------
 gridPage.onPots = function (inControl, data1, data2)
 {
@@ -456,7 +480,7 @@ gridPage.onFaders = function (inControl, data1, data2)
         {
             var sliderIndex = data1 - 41;
 
-            trackBank_0.getTrack(sliderIndex).getVolume().set(data2, 128);
+            trackBank.getTrack(sliderIndex).getVolume().set(data2, 128);
         }
         else if (data1 == 7)
         {
@@ -482,7 +506,7 @@ gridPage.onFaders = function (inControl, data1, data2)
 
            if (data2 == 127)
            {
-               trackBank_0.getTrack(buttonIndex).select();
+               trackBank.getTrack(buttonIndex).select();
                host.getMidiOutPort(1).sendMidi(159, 14,127);
                incontrol_mix = true;
 
@@ -490,6 +514,9 @@ gridPage.onFaders = function (inControl, data1, data2)
        }
 	}
 }
+
+
+
 
 
 // This detects when one of the round right scene buttons is pressed and changes the TempMode --------------------------
@@ -620,6 +647,8 @@ gridPage.onSceneButton = function(row, isPressed)
 
 
 
+
+
 // These following 4 functions control the scrolling arrow buttons allowing move around---------------------------------
 gridPage.onLeft = function(isPressed)
 {
@@ -664,13 +693,15 @@ gridPage.onDown = function(isPressed)
 
 
 
+
+
 // all what can occur while grid buttons are pressed ------------------------------------------------------------------
 gridPage.onGridButton = function(row, column, isPressed)
 {
 	var padNo = column + row*8;
 
 	//GRID Buttons actions
-   if (TEMPMODE === TempMode.OFF)
+   if (TEMPMODE === TempMode.OFF || TEMPMODE == TempMode.COLOR_RGB)
    {
       var track = column ;
       var scene = row ;
@@ -757,7 +788,7 @@ gridPage.onGridButton = function(row, column, isPressed)
        }
    }
 
-   //GRID Buttons actions
+   //GRID Buttons actions EDIT mode
    else if (TEMPMODE === TempMode.EDIT || (TEMPMODE === TempMode.DEVICE && isPopup)  )
    {
    		if (isPressed)
@@ -840,19 +871,17 @@ gridPage.onGridButton = function(row, column, isPressed)
    		}
    }
 
-
    else if (TEMPMODE === TempMode.SEND)
    {
        if (isPressed) {
            if (column < numTracks) {
-           sendBankIndex = column;
-       }
+                sendBankIndex = column;
+           }
        }
    }
 
 
-
-   // onGridButton action
+   // Grid action SOLO mode
    else if (TEMPMODE === TempMode.SOLO)
    {
    if (isPressed)
@@ -865,7 +894,7 @@ gridPage.onGridButton = function(row, column, isPressed)
    	  }
    	}
   }
-  // onGridButton action
+  // Grid action MUTE mode
    else if (TEMPMODE === TempMode.MUTE)
    {
    if (isPressed)
@@ -878,7 +907,7 @@ gridPage.onGridButton = function(row, column, isPressed)
    	  }
    	}
   }
-  // onGridButton action
+  // Grid action ARM mode
    else if (TEMPMODE === TempMode.ARM)
    {
    if (isPressed)
@@ -891,7 +920,7 @@ gridPage.onGridButton = function(row, column, isPressed)
    	  }
    	}
   }
-  // onGridButton action
+  // Grid action SELECT mode
    else if (TEMPMODE === TempMode.SELECT)
    {
    if (isPressed)
@@ -906,7 +935,7 @@ gridPage.onGridButton = function(row, column, isPressed)
    	}
   }
 
-  // onGridButton action
+  // Grid action CUT mode
      else if (TEMPMODE === TempMode.CUT)
    { 
 	   if (isPressed)
@@ -931,7 +960,7 @@ gridPage.onGridButton = function(row, column, isPressed)
 		  }
 	    }
     }
-   // onGridButton action
+   // Grid action COPY mode
    else if (TEMPMODE === TempMode.COPY)
    { 
 	   if (isPressed)
@@ -955,11 +984,14 @@ gridPage.onGridButton = function(row, column, isPressed)
 		  }
 	    }
     }
-   // onGridButton action
+   // Grid action SCENE mode
 	 else if (TEMPMODE === TempMode.SCENE) {
 
 	 }
 }
+
+
+
 
 
 // updates the grid and ----------------------------------------------------------------------------------------
@@ -972,6 +1004,9 @@ gridPage.updateGrid = function()
       this.updateTrackValue(t);
    }
 };
+
+
+
 
 
 
@@ -1016,12 +1051,17 @@ gridPage.allInRow = function()
     }
 }
 
+
+
+
+
+
 // Update LEDs----------------------------------------------------------------------------------------------------------
 gridPage.updateTrackValue = function(track) {
     if (activePage != gridPage) return;
     // this section draws the pads for the main clip launcher
 
-    // Update LEDs
+    // Update LEDs MIX
     if (TEMPMODE == TempMode.OFF || TEMPMODE == TempMode.CUT || TEMPMODE == TempMode.COPY) {
         for (var scene = 0; scene < 2; scene++) {
             var i = track + scene * 8;
@@ -1064,13 +1104,72 @@ gridPage.updateTrackValue = function(track) {
         }
     }
 
-    // Update LEDs
+    else if (TEMPMODE == TempMode.COLOR_RGB) {
+
+        for (var c = 0; c < 8; c++)
+        {
+            for (var r = 0; r < RGB_COLORS.length; r++)
+            {
+                if (trackColorRGB[c][0] == RGB_COLORS[r][0] &&
+                    trackColorRGB[c][1] == RGB_COLORS[r][1] &&
+                    trackColorRGB[c][2] == RGB_COLORS[r][2])
+                {
+                    trackColor[c] = RGB_COLORS[r][3];
+                    break;
+                }
+                else {trackColor[c] = Colour.DARK;}
+            }
+        }
+
+        for (var scene = 0; scene < 2; scene++) {
+            var i = track + scene * 8;
+
+            var col = arm[track] ? trackColor[track] : ( trackExists[track]) ? trackColor[track] : Colour.OFF;
+
+            //var fullval = mute[track] ? 1 : 3;
+
+
+            if (isRecordingQueued[i] > 0) {
+                col = Colour.RED_FLASHING;
+            }
+
+            if (hasContent[i] > 0) {
+                if (isQueued[i] > 0) {
+                    col = Colour.GREEN_FLASHING;
+                }
+                else if (isRecording[i] > 0) {
+                    col = Colour.RED_FULL;
+                }
+
+                else if (isStopQueued[i] > 0) {
+                    col = Colour.YELLOW_FLASHING;
+                }
+                else if (isPlaying[i] > 0) {
+
+                    if (isQueuedForStop[track] > 0) {
+                        col = Colour.GREEN_FLASHING;
+                    }
+                    else {
+                        col = Colour.GREEN_FULL;
+                    }
+                }
+                else {
+                    col = Colour.AMBER_FULL;
+                }
+            }
+
+            setCellLED(track ,scene , col);
+
+        }
+    }
+
+
+    // Update LEDs padsoff need to reset leds when switch between pads and cliplauncher
     else if (TEMPMODE == TempMode.PADSOFF) {
 
     }
 
     else if (TEMPMODE === TempMode.DEVICE && !isPopup) {
-
 
         for (var scene = 0; scene < 2; scene++) {
             var col = Colour.OFF;
@@ -1093,7 +1192,6 @@ gridPage.updateTrackValue = function(track) {
                     }
                 }
             }
-
             setCellLED(track, scene, col);
         }
     }
@@ -1116,13 +1214,14 @@ gridPage.updateTrackValue = function(track) {
                 break;
 
                 case 1:
-                    setCellLED(track, scene,  trackExists[track] ? (sendBankIndex == track ? Colour.DARKGREEN_FULL: Colour.DARKGREEN_LOW) : Colour.OFF );
+                    setCellLED(track, scene,
+                    trackExists[track]
+                    ? (sendBankIndex == track ? Colour.DARKGREEN_FULL: Colour.DARKGREEN_LOW) : Colour.OFF );
 
                 break;
             }
         }
     }
-
 
     // Update LEDs SOLO
     else if (TEMPMODE == TempMode.SOLO) {
@@ -1157,7 +1256,6 @@ gridPage.updateTrackValue = function(track) {
         }
     }
 
-
     // Update LEDs Popup browser
     else if (TEMPMODE == TempMode.EDIT ||  (TEMPMODE == TempMode.DEVICE && isPopup)  )  {
 
@@ -1191,15 +1289,18 @@ gridPage.updateTrackValue = function(track) {
 };
 
 
+
+
+
+
 //main variety of modes. Switching between them changes functionality of sections --------------------------------------
 gridPage.setTempMode = function(mode)
 {
    if (mode == TEMPMODE) return;
    
-   if (mode === TempMode.SCENE && mixerButtonToggle == true)
+   if (mode === TempMode.OFF && isRGBOn == true)
    {
-       TEMPMODE = (TempMode.OFF);
-       mixerButtonToggle = false;
+       TEMPMODE = (TempMode.COLOR_RGB);
        return;
    }
    
@@ -1215,13 +1316,16 @@ gridPage.setTempMode = function(mode)
 
       for (var k = 0; k < NUM_SENDS; k++)
       {
-          track.getSend(k).setIndication(mode == TempMode.SEND);
+          track.getSend(k).setIndication(mode == TempMode.SEND); //deprecated
       }
    }
 };
 
 
-// functionality to change layouts or subpanels
+
+
+
+// functionality to change layouts or subpanels-------------------------------------------------------------------------
 gridPage.switchLayoutOrPanel = function (shiftButton) {
     if (!shiftButton)
     {
