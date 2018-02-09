@@ -21,5 +21,5 @@ Faders control volume of tracks in inControl state.
 If you switch off inControl_faders_btn , then fb 1-8 will be used to select track 1-8 in the grid.
 
 NEW_UPDATE__09_02_18: Send section was implemented. Is switched on/off by pressing fader_button_2. Also some constant colours were replaced.  
-Пetting the color of tracks was implemented. It is  switched on/off by pressing fader_button_3
+Getting the color of tracks was implemented. It is  switched on/off by pressing fader_button_3
 
