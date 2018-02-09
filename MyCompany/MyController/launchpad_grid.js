@@ -523,7 +523,7 @@ gridPage.onFaders = function (inControl, data1, data2)
 gridPage.onSceneButton = function(row, isPressed)
 {
 	//RBs actions
-	if(TEMPMODE == TempMode.OFF) 
+	if(TEMPMODE == TempMode.OFF || TEMPMODE == TempMode.COLOR_RGB)
 	{
       switch(row)
       {   
@@ -1014,7 +1014,7 @@ gridPage.updateGrid = function()
 // Update LEDs
 gridPage.allInRow = function() 
 {
-	if(TEMPMODE == TempMode.OFF) 
+	if(TEMPMODE == TempMode.OFF || TEMPMODE == TempMode.COLOR_RGB)
 	{
 		var i = 0;
 		for(var scene = 0; scene < 2; scene++)
