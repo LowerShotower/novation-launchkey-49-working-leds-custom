@@ -12,3 +12,5 @@ Again, Master_btn on: press fb7 - Undo, press fb8 - redo.
 Faders control volume of tracks.
 In conclusion, if you press inControl_faders_btn to off, then fb 1-8 - it will select track 1-8 in the grid.
 
+NEW_UPDATE__09_02_18: Send section implemented. Switch on/off by fader_button_2. Also some constant colours were replaced.
+
