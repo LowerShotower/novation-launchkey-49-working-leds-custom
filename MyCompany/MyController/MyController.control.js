@@ -38,7 +38,7 @@ var TempMode =
 };
 
 var TEMPMODE = -1;
-var trackCounter;
+var numTracks; //used to know current number of tracks. Up to 64.
 var numSends = 0;//used to show the correct number of tracks that are displayed on grid
 var indexToStart = 0; //index of track from which grid of clips will be drawn
 var isAllInRow = initArray(0,2); // array to hold information about stoped/launched clips in two rows
@@ -48,10 +48,10 @@ var cursorDeviceName;
 var selectedRCPage = -1;
 var numRCPages = -1;
 var numDevices = -1;
-var devName;
+//var devName;
 var contentTypeIndex=0;
 var sendBankIndex = 0;
-var isInc = false;
+//var isInc = false;
 
 var entryCount = {};
 var isPopup = false;
@@ -91,8 +91,8 @@ var isRecordingQueued = initArray(0, 64);
 var isStopQueued = initArray(0, 64);
 
 //Used to monitor if all in two rows are playing. it's is not detect whether any of existing clips in tracks are playing. Only current two rows
-var isPlayingAll = initArray(0, 64);
-var hasContentAll = initArray(0,64);
+var isPlayingAll = initArray(0, 128);
+var hasContentAll = initArray(0,128);// array to carry information about to rows, up to 64 tracks
 
 //Check if tracks are playing
 var isTrackPlaying = initArray (0,32);
@@ -170,7 +170,7 @@ function getGridObserverFuncAll(track, varToStore)
 {
    return function(scene, value)
    {
-      varToStore[scene*32 + track] = value;
+      varToStore[scene*NUM_TRACKS_ALL + track] = value;
       if (varToStore == isPlayingAll)
        {
        isTrackPlaying[track] = value;
@@ -250,7 +250,7 @@ function init()
    trackBankAll = host.createMainTrackBank(NUM_TRACKS_ALL, 0 , 2);
 
 
-   trackBank.addChannelCountObserver(function(value){trackCounter = value;});//?????????????
+   trackBank.addChannelCountObserver(function(value){numTracks = value;println(numTracks);});//?????????????
 
 //observers to track all the clips in two scenes
    for (var t = 0; t < NUM_TRACKS_ALL; t++) 

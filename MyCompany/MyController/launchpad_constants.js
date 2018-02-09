@@ -103,7 +103,7 @@ var LED =
 // Number of tracks, sends and scenes, they are called from the Launchpad.control.js file only during the init() function
 var NUM_TRACKS = 8;
 //Needed to scan through the scene to check if any of existing tracks are playing ore stoped
-var NUM_TRACKS_ALL = 32;
+var NUM_TRACKS_ALL = 64;
 var NUM_SENDS = 8;
 var NUM_SCENES = 2;
 var NUM_DEVICES = 8;

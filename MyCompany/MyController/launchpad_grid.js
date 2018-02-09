@@ -212,7 +212,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
                 {
                     this.setTempMode(TempMode.OFF);
                     host.showPopupNotification("PADS: MIX");
-                    /*for (var t=0; t<trackCounter; t++) {trackBankAll.getChannel(t).getSolo().set(false);}*/
+                    /*for (var t=0; t<numTracks; t++) {trackBankAll.getChannel(t).getSolo().set(false);}*/
                 }
 	 			break;
 	 		case OtherButton.FB6:
@@ -512,7 +512,7 @@ gridPage.onSceneButton = function(row, isPressed)
             		}
             		else if (IS_LOOP_PRESSED) 
             		{
-	            		for (var t=0; t<trackCounter; t++) 
+	            		for (var t=0; t<numTracks; t++) 
             			{
 		            		if (hasContentAll[row*NUM_TRACKS_ALL + t]>0) 
 				    		{
@@ -528,14 +528,14 @@ gridPage.onSceneButton = function(row, isPressed)
 	            {
             		if (!IS_LOOP_PRESSED)
             		{
-	            		for (var t=0; t<trackCounter; t++)
+	            		for (var t=0; t<numTracks; t++)
 	            		{
 		            		trackBankAll.getChannel(t).getClipLauncherSlots().stop();
 	            		}
             		}
             		else if (IS_LOOP_PRESSED) 
             		{
-            			for (var t=0; t<trackCounter; t++) 
+            			for (var t=0; t<numTracks; t++) 
             			{
 		            		if (hasContentAll[row*NUM_TRACKS_ALL + t]>0) 
 				    		{
@@ -638,7 +638,7 @@ gridPage.onRight = function(isPressed)
 	//RIGHT action
    if (isPressed)
    {
-   		if( indexToStart < (trackCounter-NUM_TRACKS) ) { indexToStart++; }
+   		if( indexToStart < (numTracks-NUM_TRACKS) ) { indexToStart++; }
 
         trackBank.scrollTracksDown();
    }
@@ -844,7 +844,7 @@ gridPage.onGridButton = function(row, column, isPressed)
    else if (TEMPMODE === TempMode.SEND)
    {
        if (isPressed) {
-           if (column < trackCounter) {
+           if (column < numTracks) {
            sendBankIndex = column;
        }
        }
@@ -963,7 +963,7 @@ gridPage.onGridButton = function(row, column, isPressed)
 
 
 // updates the grid and ----------------------------------------------------------------------------------------
-// it is called if flush function which is called every time when observers detects any changes in bitwig
+// it is called in flush function which is called every time as observers detect any changes in bitwig
 gridPage.updateGrid = function()
 {
 	this.allInRow();
@@ -975,7 +975,7 @@ gridPage.updateGrid = function()
 
 
 
-// used to check if all clips if specific scene are launched or not. it used to light RBs with appropriate colour-------
+// used to check if all clips in specific scene are launched or not. it used to light RBs with appropriate colour-------
 // Update LEDs
 gridPage.allInRow = function() 
 {
@@ -985,9 +985,9 @@ gridPage.allInRow = function()
 		for(var scene = 0; scene < 2; scene++)
 		{
 			isAllInRow[scene] = false;
-			for(var track=0; track<trackCounter; track++)
+			for(var track=0; track<numTracks; track++)
 			{
-				i = track+ scene*32;
+				i = track+ scene*NUM_TRACKS_ALL;
 			    if (hasContentAll[i]>0) 
 			    {
 			    	if (isPlayingAll[i]>0) 
