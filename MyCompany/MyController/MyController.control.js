@@ -19,8 +19,7 @@ var TempMode =
    OFF:-1,
    VOLUME:0,
    PAN:1,
-   SEND_A:2,
-   SEND_B:3,
+   SEND:2,
    TRACK:4,
    SCENE:5,
    USER1:6,
@@ -40,8 +39,9 @@ var TempMode =
 
 var TEMPMODE = -1;
 var trackCounter;
-var numberToStart = 0;
-var isAllInRow = initArray(0,2);
+var numSends = 0;//used to show the correct number of tracks that are displayed on grid
+var indexToStart = 0; //index of track from which grid of clips will be drawn
+var isAllInRow = initArray(0,2); // array to hold information about stoped/launched clips in two rows
 var isCut = false;
 var cursorDevicePosition = -1;
 var cursorDeviceName;
@@ -50,6 +50,7 @@ var numRCPages = -1;
 var numDevices = -1;
 var devName;
 var contentTypeIndex=0;
+var sendBankIndex = 0;
 var isInc = false;
 
 var entryCount = {};
@@ -73,8 +74,9 @@ var isMatrixStopped = initArray(0, 8);
 var isSelected = initArray(0, 8);
 var isQueuedForStop = initArray(0, 8);
 var trackExists = initArray(0, 8);
-var sendA = initArray(0, 8);
-var sendB = initArray(0, 8);
+var sendExists = initArray (0, 8);
+
+
 var vuMeter = initArray(0, 8);
 var masterVuMeter = 0;
 
@@ -190,7 +192,7 @@ function init()
    application = host.createApplication();
    popupBrowser = host.createPopupBrowser();
 
-
+    //For popup browser column nav
    deviceTypeCursorItem = popupBrowser.deviceTypeColumn().createCursorItem();
    locationCursorItem = popupBrowser.locationColumn().createCursorItem();
    deviceCursorItem = popupBrowser.deviceColumn().createCursorItem();
@@ -201,20 +203,20 @@ function init()
    masterTrack_0 = host.createMasterTrackSection(0);
 
    deviceBank_0 = cursorTrack_0.createDeviceBank(NUM_DEVICES);
-   primaryDevice_0 = cursorTrack_0.createCursorDevice("Primary");
+   primaryDevice_0 = cursorTrack_0.createCursorDevice("Primary");//deprecated. need to be deleted
    cursorDevice_0 = cursorTrack_0.createCursorDevice();
 
 
-   trackBank_0 = host.createTrackBankSection(8, 0, 0);
+   trackBank_0 = host.createTrackBankSection(8, 0, 0); // need to be deleted. script uses trackBank
    cursorRCPage = cursorDevice_0.createCursorRemoteControlsPage(8);
    cursorDeviceBrowser = cursorDevice_0.createDeviceBrowser(40,40);
 
 
-   //block of different popup browser steps
+   //Block of different popup browser steps
    //specificaly it is used to set the number of steps which it can scroll up/down in whole rotation for the first knob ( page choosing)
     entryCount[1] = 10;
 
-    // it can be used to detect number of entries in specific column. This number is equal to amount of steps . It uses to scroll over great amount of entries
+    // It can be used to detect number of entries in specific column. This number is equal to amount of steps . It uses to scroll over great amount of entries
     //popupBrowser.deviceTypeColumn().entryCount().addValueObserver(getEntryCountObserverFunc(3));
     //it is fixed amount of available steps
     entryCount[2] = 10;
@@ -235,21 +237,22 @@ function init()
 
 
     popupBrowser.exists().addValueObserver(function(value){isPopup = value;
-    println(isPopup);
+    //println(isPopup);
     });
 
     transport.addLauncherOverdubObserver(function(state){
         WRITEOVR=state;
    });
 
-   // a Trackbank is the tracks, sends and scenes being controlled, these arguments are set to 8,2,8 in the launchpad_constants.js file changing them will change the size of the grid displayed on the Bitwig Clip Launcher
+   // a Trackbank is the tracks, sends and scenes being controlled, these arguments are set to 8,2,8 in the
+    // launchpad_constants.js file changing them will change the size of the grid displayed on the Bitwig Clip Launcher
    trackBank = host.createMainTrackBank(NUM_TRACKS, NUM_SENDS, NUM_SCENES);
    trackBankAll = host.createMainTrackBank(NUM_TRACKS_ALL, 0 , 2);
 
 
    trackBank.addChannelCountObserver(function(value){trackCounter = value;});//?????????????
 
-
+//observers to track all the clips in two scenes
    for (var t = 0; t < NUM_TRACKS_ALL; t++) 
    {
    		var clipLauncherAll = trackBankAll.getChannel(t).getClipLauncherSlots();
@@ -264,10 +267,20 @@ function init()
       var track = trackBank.getChannel(t);
 
 
+       track.sendBank().itemCount().addValueObserver(function (value){
+           numSends = value;});
+
+       for (var sendIndex = 0; sendIndex < NUM_SENDS; sendIndex++)
+       {
+
+         //  track.sendBank().getItemAt(sendIndex).addValueObserver(63, getTrackObserverFunc(t, sends));//63 is range to scale value
+       }
+
+
+
       track.getVolume().addValueObserver(8, getTrackObserverFunc(t, volume));
       track.getPan().addValueObserver(userVarPans, getTrackObserverFunc(t, pan));
-      track.getSend(0).addValueObserver(8, getTrackObserverFunc(t, sendA));
-      track.getSend(1).addValueObserver(8, getTrackObserverFunc(t, sendB));    
+
       track.getMute().addValueObserver(getTrackObserverFunc(t, mute));
       track.getSolo().addValueObserver(getTrackObserverFunc(t, solo));
       track.getArm().addValueObserver(getTrackObserverFunc(t, arm));
@@ -425,7 +438,7 @@ function flush()
 
 function onMidi0(status, data1, data2)
 {
-    printMidi(status, data1, data2);
+    //printMidi(status, data1, data2);
    if (isChannelController(status))
    {
        activePage.onFaders(incontrol_mix, data1, data2);
@@ -437,7 +450,8 @@ function onMidi0(status, data1, data2)
 
 function onMidi1(status, data1, data2)
 {
-    printMidi(status, data1, data2);
+
+   // printMidi(status, data1, data2);
    if (isChannelController(status))
    { 
      activePage.onFaders(incontrol_mix, data1, data2);
@@ -458,26 +472,26 @@ function onMidi1(status, data1, data2)
 
          case TopButton.CURSOR_LEFT:
             activePage.onLeft(isPressed);
-            println("left is pressed");
+            //println("left is pressed");
             break;
 
          case TopButton.CURSOR_RIGHT:
             activePage.onRight(isPressed);
-             println("right is pressed");
+             //println("right is pressed");
             break;
 
          case TopButton.CURSOR_UP:
             activePage.onUp(isPressed);
-             println("up is pressed");
+             //println("up is pressed");
             break;
 
          case TopButton.CURSOR_DOWN:
             activePage.onDown(isPressed);
-            println("down is pressed");
+            //println("down is pressed");
             break;
 
          case OtherButton.MASTER:
-         	println("MASTER is pressed");
+         	//println("MASTER is pressed");
             activePage.onOtherButton(OtherButton.MASTER, data2 > 0);
             break;
             
@@ -517,7 +531,7 @@ function onMidi1(status, data1, data2)
    			 var row = (data1-96) >> 4 ;
 		     var column = data1 & 0xF;
 		         
-		     //println("row = " + row + "col = " + column)
+		     ////println("row = " + row + "col = " + column)
 		         
 		     if (column < 8)
 		     {
@@ -594,7 +608,7 @@ function flushLEDs()
    if (changedCount == 0) return;
 
    //uncommenting this displays a count of the number of LEDs to be changed
-  // println("Repaint: " + changedCount + " LEDs");
+  // //println("Repaint: " + changedCount + " LEDs");
 
   for(var i = 0; i<80; i++)
   {

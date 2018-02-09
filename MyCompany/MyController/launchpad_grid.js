@@ -161,7 +161,20 @@ gridPage.onOtherButton = function(buttonId, isPressed)
 
                 if (isPressed)
                {
-                 /*  if (TEMPMODE != TempMode.EDIT)
+
+                   if (TEMPMODE != TempMode.SEND)
+                   {
+                       this.setTempMode(TempMode.SEND);
+                       host.showPopupNotification("PADS: SEND");
+                   }
+                   else
+                   {
+                       this.setTempMode(TempMode.OFF);
+                       host.showPopupNotification("PADS:MIX");
+                   }
+
+
+                   /*  if (TEMPMODE != TempMode.EDIT)
                    {
                        this.setTempMode(TempMode.EDIT);
                        host.showPopupNotification("EDIT");
@@ -363,7 +376,7 @@ gridPage.makeScrollPot = function () {
     var d;
     return function (knob, data2, steps, resolution, func2, func1) {
 
-        //println(prevData);
+        ////println(prevData);
         if (prevData === undefined) {
             prevData = data2;
         }
@@ -398,13 +411,22 @@ gridPage.onPots = function (inControl, data1, data2)
 	{
 		gridPage.scrollPot(knobIndex, data2, entryCount[knobIndex], 128,
 							gridPage.scrollToNext, gridPage.scrollToPrevious );
-		/*println("deviceType "+ entryCount['2']);
-		println("location "+ entryCount['3']);
-        println("device "+ entryCount['4']);
-        println("category  "+ entryCount['5']);
-        println("tag "+ entryCount['6']);
-        println("results  "+ entryCount['7']);*/
+		/*//println("deviceType "+ entryCount['2']);
+		//println("location "+ entryCount['3']);
+        //println("device "+ entryCount['4']);
+        //println("category  "+ entryCount['5']);
+        //println("tag "+ entryCount['6']);
+        //println("results  "+ entryCount['7']);*/
 	}
+
+	else if (TEMPMODE == TempMode.SEND)
+    {
+        if(knobIndex<NUM_SENDS)
+        {
+            trackBank.getTrack(sendBankIndex).sendBank().getItemAt(knobIndex).set(data2 / 128);
+        }
+    }
+
 	else {
 		if(inControl == false)
 		{
@@ -417,6 +439,7 @@ gridPage.onPots = function (inControl, data1, data2)
 		{
 			if (knobIndex >= 0 && knobIndex < 8)
 			{
+			    //println("knob" + knobIndex);
 				cursorRCPage.getParameter(knobIndex).set(data2, 128);
 			}
 		}
@@ -603,7 +626,7 @@ gridPage.onLeft = function(isPressed)
 	//LEFT action
    if (isPressed)
    {
-   		if(numberToStart > 0) {	numberToStart--; }
+   		if(indexToStart > 0) {	indexToStart--; }
 
         trackBank.scrollTracksUp();
 
@@ -615,7 +638,7 @@ gridPage.onRight = function(isPressed)
 	//RIGHT action
    if (isPressed)
    {
-   		if( numberToStart < (trackCounter-NUM_TRACKS) ) { numberToStart++; }
+   		if( indexToStart < (trackCounter-NUM_TRACKS) ) { indexToStart++; }
 
         trackBank.scrollTracksDown();
    }
@@ -816,6 +839,18 @@ gridPage.onGridButton = function(row, column, isPressed)
 	   		}
    		}
    }
+
+
+   else if (TEMPMODE === TempMode.SEND)
+   {
+       if (isPressed) {
+           if (column < trackCounter) {
+           sendBankIndex = column;
+       }
+       }
+   }
+
+
 
    // onGridButton action
    else if (TEMPMODE === TempMode.SOLO)
@@ -1063,7 +1098,33 @@ gridPage.updateTrackValue = function(track) {
         }
     }
 
-    // Update LEDs
+    //Update LEDs sends
+    else if (TEMPMODE == TempMode.SEND)
+    {
+        for ( scene = 0; scene < 2; scene++)
+        {
+            switch (scene)
+            {
+                case 0:
+                    if (track < numSends){
+                        setCellLED(track, scene, Colour.YELLOW_LOW);
+                    }
+                    else
+                    {
+                        setCellLED(track, scene, Colour.OFF);
+                    }
+                break;
+
+                case 1:
+                    setCellLED(track, scene,  trackExists[track] ? (sendBankIndex == track ? Colour.DARKGREEN_FULL: Colour.DARKGREEN_LOW) : Colour.OFF );
+
+                break;
+            }
+        }
+    }
+
+
+    // Update LEDs SOLO
     else if (TEMPMODE == TempMode.SOLO) {
 
         if (trackExists[track]) {
@@ -1076,7 +1137,7 @@ gridPage.updateTrackValue = function(track) {
 
         if (trackExists[track]) {
             setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_LOW : Colour.GREEN_FULL);
-            setCellLED(track, 1, mute[track] ? Colour.ORANGE : Colour.AMBER_LOW);
+            setCellLED(track, 1, mute[track] ? Colour.ORANGE : Colour.ORANGE_LOW);
         }
     }
 
@@ -1084,7 +1145,7 @@ gridPage.updateTrackValue = function(track) {
 
         if (trackExists[track]) {
             setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_LOW : Colour.GREEN_FULL);
-            setCellLED(track, 1, arm[track] ? Colour.RED_FULL : Colour.GRAY_LOW);
+            setCellLED(track, 1, arm[track] ? Colour.RED_FULL : Colour.LIGHTBLUE_FULL);
         }
     }
 
@@ -1092,12 +1153,12 @@ gridPage.updateTrackValue = function(track) {
 
         if (trackExists[track]) {
             setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_LOW : Colour.GREEN_FULL);
-            setCellLED(track, 1, isSelected[track] ? Colour.GRAY_FULL : Colour.GRAY_LOW );
+            setCellLED(track, 1, isSelected[track] ? Colour.LIGHTBLUE_FULL : Colour.LIGHTBLUE_LOW );
         }
     }
 
 
-    // Update LEDs
+    // Update LEDs Popup browser
     else if (TEMPMODE == TempMode.EDIT ||  (TEMPMODE == TempMode.DEVICE && isPopup)  )  {
 
         if (trackExists[track]) {
@@ -1150,9 +1211,12 @@ gridPage.setTempMode = function(mode)
       var track = trackBank.getTrack(p);
       track.getVolume().setIndication(mode == TempMode.VOLUME);
       track.getPan().setIndication(mode == TempMode.PAN);
-      track.getSend(0).setIndication(mode == TempMode.SEND_A);
-      track.getSend(1).setIndication(mode == TempMode.SEND_B);
       userControls_0.getControl(p).setIndication(mode == TempMode.USER1);
+
+      for (var k = 0; k < NUM_SENDS; k++)
+      {
+          track.getSend(k).setIndication(mode == TempMode.SEND);
+      }
    }
 };
 
