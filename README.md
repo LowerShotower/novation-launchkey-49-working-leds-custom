@@ -22,5 +22,5 @@ If you switch off inControl_faders_btn , then fb 1-8 will be used to select trac
 
 NEW_UPDATE__09_02_18: Send section was implemented. Is switched on/off by pressing fader_button_2. Also some constant colours were replaced.  
 Getting the color of tracks was implemented. It is  switched on/off by pressing fader_button_3 
-TODO: aвjust the match of colors in Bitwig and script
+TODO: adjust the match of colors in Bitwig and script
 
