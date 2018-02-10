@@ -456,8 +456,8 @@ function updateIndications()
 
 function exit()
 {
-   sendMidi(0x90, 0x0C, 0x00);
-   resetDevice();
+    host.getMidiOutPort(1).sendMidi(159, 12, 0);
+
 }
 
 

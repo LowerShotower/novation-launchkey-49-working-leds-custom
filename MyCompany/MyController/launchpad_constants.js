@@ -149,7 +149,7 @@ var Colour = // Novation are from the UK
     LIGHT_VIOLET:116, //116
     VIOLET_FLASHING:248, //68
 
-    GRAY:3,
+    GRAY:2,
     GRAY_HALF: 71,//1 71 118
 
     MINT :29,
