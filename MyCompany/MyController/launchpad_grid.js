@@ -1,4 +1,5 @@
 gridPage = new Page();
+gridPage.previousTempMode = TempMode.OFF;
 gridPage.canScrollTracksUp = false;
 gridPage.canScrollTracksDown = false;
 gridPage.canScrollScenesUp = false;
@@ -73,7 +74,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
  	}
 
 
- 	//FADERS Button's actions
+ 	//FADERS Button's actions in inControl Mode
 	if (IS_MASTER_TOGGLED) 
 	{
  		switch (buttonId)
@@ -227,7 +228,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
                 }
                 else
                 {
-                    this.setTempMode(TempMode.OFF);
+                    this.setTempMode(this.previousTempMode);
                     host.showPopupNotification("PADS: MIX");
                     /*for (var t=0; t<numTracks; t++) {trackBankAll.getChannel(t).getSolo().set(false);}*/
                 }
@@ -240,7 +241,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
                 }
                 else
                 {
-                    this.setTempMode(TempMode.OFF);
+                    this.setTempMode(this.previousTempMode);
                     host.showPopupNotification("PADS: MIX");
                 }
                 break;
@@ -252,7 +253,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
                 }
                 else
                 {
-                    this.setTempMode(TempMode.OFF);
+                    this.setTempMode(this.previousTempMode);
                     host.showPopupNotification("PADS: MIX");
                 }
 				break;
@@ -264,7 +265,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
                 }
                 else
                 {
-                    this.setTempMode(TempMode.OFF);
+                    this.setTempMode(this.previousTempMode);
                     host.showPopupNotification("PADS: MIX");
                 }break;
 	 	}
@@ -1303,8 +1304,9 @@ gridPage.setTempMode = function(mode)
        TEMPMODE = (TempMode.COLOR_RGB);
        return;
    }
-   
-   TEMPMODE = mode;
+    this.previousTempMode =TEMPMODE;
+
+    TEMPMODE = mode;
 
    // This updates the indicators (The rainbow displays on dials for controlls (userControls number 3 is missing? from original script)
    for(var p=0; p<8; p++)
