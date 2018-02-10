@@ -1036,18 +1036,18 @@ gridPage.allInRow = function()
 			      	}
 				}
 			}
-			setRightLED(scene, isAllInRow[scene] ? Colour.GREEN_FULL : Colour.YELLOW_FULL);
+			setRightLED(scene, isAllInRow[scene] ? Colour.GREEN : Colour.YELLOW);
 		}
 	}
 	else if (TEMPMODE == TempMode.DEVICE && !isPopup)
 	{
-        setRightLED(0,  Colour.VIOLET_FULL );
-        setRightLED(1,  Colour.RED_FULL );
+        setRightLED(0,  Colour.VIOLET );
+        setRightLED(1,  Colour.RED );
 	}
     else if ( TEMPMODE == TempMode.EDIT ||(TEMPMODE == TempMode.DEVICE && isPopup) )
     {
-        setRightLED(0,  Colour.RED_FULL );
-        setRightLED(1,  Colour.GREEN_FULL );
+        setRightLED(0,  Colour.RED );
+        setRightLED(1,  Colour.GREEN );
     }
 }
 
@@ -1066,7 +1066,7 @@ gridPage.updateTrackValue = function(track) {
         for (var scene = 0; scene < 2; scene++) {
             var i = track + scene * 8;
 
-            var col = arm[track] ? Colour.WHITE : ( trackExists[track]) ? Colour.GRAY_LOW : Colour.OFF;
+            var col = arm[track] ? Colour.WHITE : ( trackExists[track]) ? Colour.GRAY_HALF : Colour.OFF;
 
             var fullval = mute[track] ? 1 : 3;
 
@@ -1079,7 +1079,7 @@ gridPage.updateTrackValue = function(track) {
                     col = Colour.GREEN_FLASHING;
                 }
                 else if (isRecording[i] > 0) {
-                    col = Colour.RED_FULL;
+                    col = Colour.RED;
                 }
 
                 else if (isStopQueued[i] > 0) {
@@ -1091,11 +1091,11 @@ gridPage.updateTrackValue = function(track) {
                         col = Colour.GREEN_FLASHING;
                     }
                     else {
-                        col = Colour.GREEN_FULL;
+                        col = Colour.GREEN;
                     }
                 }
                 else {
-                    col = Colour.AMBER_FULL;
+                    col = Colour.AMBER;
                 }
             }
 
@@ -1117,7 +1117,7 @@ gridPage.updateTrackValue = function(track) {
                     trackColor[c] = RGB_COLORS[r][3];
                     break;
                 }
-                else {trackColor[c] = Colour.DARK;}
+                else {trackColor[c] = Colour.DARK_GRAY;}
             }
         }
 
@@ -1138,7 +1138,7 @@ gridPage.updateTrackValue = function(track) {
                     col = Colour.GREEN_FLASHING;
                 }
                 else if (isRecording[i] > 0) {
-                    col = Colour.RED_FULL;
+                    col = Colour.RED;
                 }
 
                 else if (isStopQueued[i] > 0) {
@@ -1150,11 +1150,11 @@ gridPage.updateTrackValue = function(track) {
                         col = Colour.GREEN_FLASHING;
                     }
                     else {
-                        col = Colour.GREEN_FULL;
+                        col = Colour.GREEN;
                     }
                 }
                 else {
-                    col = Colour.AMBER_FULL;
+                    col = Colour.AMBER;
                 }
             }
 
@@ -1176,19 +1176,19 @@ gridPage.updateTrackValue = function(track) {
             if (scene == 0) {
             	if (track < numRCPages) {
                     if (selectedRCPage == track) {
-                        col = Colour.BLUE_FULL;
+                        col = Colour.BLUE;
                     }
                     else {
-                        col = Colour.BLUE_LOW;
+                        col = Colour.BLUE_HALF;
                     }
                 }
             } else if (scene == 1) {
                 if (track < numDevices) {
                     if (cursorDevicePosition == track) {
-                        col = Colour.VIOLET_FULL;
+                        col = Colour.VIOLET;
                     }
                     else {
-                        col = Colour.VIOLET_LOW;
+                        col = Colour.VIOLET_HALF;
                     }
                 }
             }
@@ -1205,7 +1205,7 @@ gridPage.updateTrackValue = function(track) {
             {
                 case 0:
                     if (track < numSends){
-                        setCellLED(track, scene, Colour.YELLOW_LOW);
+                        setCellLED(track, scene, Colour.YELLOW_HALF);
                     }
                     else
                     {
@@ -1216,7 +1216,7 @@ gridPage.updateTrackValue = function(track) {
                 case 1:
                     setCellLED(track, scene,
                     trackExists[track]
-                    ? (sendBankIndex == track ? Colour.DARKGREEN_FULL: Colour.DARKGREEN_LOW) : Colour.OFF );
+                    ? (sendBankIndex == track ? Colour.DARK_BLUE: Colour.DARK_BLUE_HALF) : Colour.OFF );
 
                 break;
             }
@@ -1227,32 +1227,32 @@ gridPage.updateTrackValue = function(track) {
     else if (TEMPMODE == TempMode.SOLO) {
 
         if (trackExists[track]) {
-            setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_LOW : Colour.GREEN_FULL);
-            setCellLED(track, 1, solo[track] ? Colour.YELLOW_FULL : Colour.YELLOW_LOW);
+            setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_HALF : Colour.GREEN);
+            setCellLED(track, 1, solo[track] ? Colour.YELLOW : Colour.YELLOW_HALF);
         }
     }
 
     else if (TEMPMODE == TempMode.MUTE) {
 
         if (trackExists[track]) {
-            setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_LOW : Colour.GREEN_FULL);
-            setCellLED(track, 1, mute[track] ? Colour.ORANGE : Colour.ORANGE_LOW);
+            setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_HALF : Colour.GREEN);
+            setCellLED(track, 1, mute[track] ? Colour.ORANGE : Colour.ORANGE_HALF);
         }
     }
 
     else if (TEMPMODE == TempMode.ARM) {
 
         if (trackExists[track]) {
-            setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_LOW : Colour.GREEN_FULL);
-            setCellLED(track, 1, arm[track] ? Colour.RED_FULL : Colour.LIGHTBLUE_FULL);
+            setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_HALF : Colour.GREEN);
+            setCellLED(track, 1, arm[track] ? Colour.RED : Colour.LIGHTBLUE);
         }
     }
 
     else if (TEMPMODE == TempMode.SELECT) {
 
         if (trackExists[track]) {
-            setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_LOW : Colour.GREEN_FULL);
-            setCellLED(track, 1, isSelected[track] ? Colour.LIGHTBLUE_FULL : Colour.LIGHTBLUE_LOW );
+            setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_HALF : Colour.GREEN);
+            setCellLED(track, 1, isSelected[track] ? Colour.LIGHTBLUE : Colour.LIGHTBLUE_HALF );
         }
     }
 
@@ -1260,29 +1260,29 @@ gridPage.updateTrackValue = function(track) {
     else if (TEMPMODE == TempMode.EDIT ||  (TEMPMODE == TempMode.DEVICE && isPopup)  )  {
 
         if (trackExists[track]) {
-            setCellLED(0, 0,   Colour.RED_FULL);
-            setCellLED(0, 1,Colour.GREEN_FULL);
+            setCellLED(0, 0,   Colour.RED);
+            setCellLED(0, 1,Colour.GREEN);
 
             setCellLED(1, 0, Colour.ORANGE);
             setCellLED(1, 1, Colour.ORANGE);
 
-            setCellLED(2, 0, Colour.GRAY_LOW);
-            setCellLED(2, 1, Colour.GRAY_LOW);
+            setCellLED(2, 0, Colour.GRAY_HALF);
+            setCellLED(2, 1, Colour.GRAY_HALF);
 
             setCellLED(3, 0, Colour.LIME);
             setCellLED(3, 1, Colour.LIME);
 
-            setCellLED(4, 0, Colour.BLUE_LOW);
-            setCellLED(4, 1, Colour.BLUE_LOW);
+            setCellLED(4, 0, Colour.BLUE_HALF);
+            setCellLED(4, 1, Colour.BLUE_HALF);
 
-            setCellLED(5, 0, Colour.GREEN_LOW);
-            setCellLED(5, 1, Colour.GREEN_LOW);
+            setCellLED(5, 0, Colour.GREEN_HALF);
+            setCellLED(5, 1, Colour.GREEN_HALF);
 
-            setCellLED(6, 0, Colour.GRAY_LOW);
-            setCellLED(6, 1, Colour.GRAY_LOW);
+            setCellLED(6, 0, Colour.GRAY_HALF);
+            setCellLED(6, 1, Colour.GRAY_HALF);
 
-            setCellLED(7, 0, Colour.VIOLET_LOW);
-            setCellLED(7, 1, Colour.VIOLET_LOW);
+            setCellLED(7, 0, Colour.VIOLET_HALF);
+            setCellLED(7, 1, Colour.VIOLET_HALF);
         }
     }
 

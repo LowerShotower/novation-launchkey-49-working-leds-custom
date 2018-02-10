@@ -673,9 +673,9 @@ function flushLEDs()
            var column = i & 0x7;
            var row = i >> 3;
 
-           if (colour == Colour.RED_FLASHING||colour == Colour.AMBER_FLASHING||colour == Colour.YELLOW_FLASHING||colour == Colour.GREEN_FLASHING)
+           if (colour >=200 && colour < 328)//flashing colour numeration. need to substract 200 to get the appropriate final color
            {
-               host.getMidiOutPort(1).sendMidi(0x92, 96 + row*16 + column, colour);
+               host.getMidiOutPort(1).sendMidi(0x92, 96 + row*16 + column, colour-200);
            }
            else
            {

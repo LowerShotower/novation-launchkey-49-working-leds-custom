@@ -46,77 +46,155 @@ function mixColour(red, green, blink)
 }
 
 
-var RGB_COLORS =
-[
-    [ 0.3294117748737335 , 0.3294117748737335 , 0.3294117748737335 , 1 /*"Dark Gray"*/ ],
-    [ 0.47843137383461   , 0.47843137383461   , 0.47843137383461   , 117 /*"Gray"*/ ],
-    [ 0.7882353067398071 , 0.7882353067398071 , 0.7882353067398071 , 118 /*"Light Gray"*/ ],
-    [ 0.5254902243614197 , 0.5372549295425415 , 0.6745098233222961 , 115 /*"Silver"*/ ],
-    [ 0.6392157077789307 , 0.4745098054409027 , 0.26274511218070984, 105 /*"Dark Brown"*/ ],
-    [ 0.7764706015586853 , 0.6235294342041016 , 0.43921568989753723, 62 /*"Brown"*/ ],
-    [ 0.34117648005485535, 0.3803921639919281 , 0.7764706015586853 , 112 /*"Dark Blue"*/ ],
-    [ 0.5176470875740051 , 0.5411764979362488 , 0.8784313797950745 , 116 /*"Purplish Blue"*/ ],
-    [ 0.5843137502670288 , 0.2862745225429535 , 0.7960784435272217 , 48 /*"Purple"*/ ],
-    [ 0.8509804010391235 , 0.21960784494876862, 0.4431372582912445 , 57/*"Pink"*/ ],
-    [ 0.8509804010391235 , 0.18039216101169586, 0.1411764770746231 , 60 /*"Red"*/ ],
-    [ 1                  , 0.34117648005485535, 0.0235294122248888 , 107 /*"Orange"*/ ],
-    [ 0.8509804010391235 , 0.615686297416687  , 0.062745101749897  , 96 /*"Light Orange"*/ ],
-    [ 0.45098039507865906, 0.5960784554481506 , 0.0784313753247261 , 63 /*"Green"*/ ],
-    [ 0                  , 0.615686297416687  , 0.27843138575553894, 65 /*"Cold Green"*/ ],
-    [ 0                  , 0.6509804129600525 , 0.5803921818733215 , 66 /*"Bluish Green"*/ ],
-    [ 0                  , 0.6000000238418579 , 0.8509804010391235 , 67 /*"Blue"*/ ],
-    [ 0.7372549176216125 , 0.4627451002597809 , 0.9411764740943909 , 56 /*"Light Purple"*/ ],
-    [ 0.8823529481887817 , 0.4000000059604645 , 0.5686274766921997 , 52 /*"Light Pink"*/ ],
-    [ 0.9254902005195618 , 0.3803921639919281 , 0.34117648005485535, 126 /*"Skin"*/ ],
-    [ 1                  , 0.5137255191802979 , 0.24313725531101227, 61 /*"Redish Brown"*/ ],
-    [ 0.8941176533699036 , 0.7176470756530762 , 0.30588236451148987, 105 /*"Light Brown"*/ ],
-    [ 0.6274510025978088 , 0.7529411911964417 , 0.2980392277240753 , 122 /*"Light Green"*/ ],
-    [ 0.24313725531101227, 0.7333333492279053 , 0.3843137323856354 , 123 /*"Grass Green"*/ ],
-    [ 0.26274511218070984, 0.8235294222831726 , 0.7254902124404907 , 90 /*"Light Blue"*/ ],
-    [ 0.2666666805744171 , 0.7843137383460999 , 1                  , 38 /*"Greenish Blue"*/ ]
-];
-
-
-
-
 // Defines the values to be sent for the colours
 var Colour = // Novation are from the UK
 {
-   OFF:0,
-    DARK: 1,
-   RED_LOW:7, //7
-   RED_FULL:72, // 6
-   AMBER_LOW:125, //125 100 62
-   AMBER_FULL:62,
-   YELLOW_FULL:13, //12
-   YELLOW_LOW: 113, //113 8
-   ORANGE:84, //84 61 96
-    ORANGE_LOW: 83,
-   LIME:74,
-   HEADER:mixColour(0,1,false),
-   GREEN_LOW:22,  //19
-   GREEN_FULL:122,
-    DARKGREEN_LOW:15, //15
-    DARKGREEN_FULL:13,
-   RED_FLASHING:57,
-   AMBER_FLASHING:109,
-   YELLOW_FLASHING: 126,
-   GREEN_FLASHING:75, //73
-    BLUE_FULL:78,
-    BLUE_LOW:47, // 39  47 112 44 46  68
-    LIGHTBLUE_LOW:65, // 9238
-    LIGHTBLUE_FULL:114,
-    BLUE_FLASHING:68,
-    VIOLET_FULL:48,
-    VIOLET_LOW:51, // 39  47 112 44 46  68
-    VIOLET_LIGHT:116, //116
-    VIOLET_FLASHING:68,
-    GRAY_FULL:3,
-    GRAY_LOW: 117, //1 71 118
+    Dark_Gray:71,//117 71
+    Dark_Gray_fl:201,
+    Gray:118,//118
+    Gray_fl:202,
+    Light_Gray:119,//119 70
+    Light_Gray_fl:203,
+    Silver:115,
+    Silver_fl:315,
+    Dark_Brown:83,
+    Dark_Brown_fl:305,
+    Brown:105,
+    Brown_fl:262,
+    Dark_Blue:51, //112
+    Dark_Blue_fl:251,
+    Purplish_Blue:112,
+    Purplish_Blue_fl:312,
+    Purple:55,
+    Purple_fl:255,
+    Pink:57,
+    Pink_fl:247,
+    Red:6,
+    Red_fl:205,
+    Orange:10,
+    Orange_fl:210,
+    Light_Orange:14, //9
+    Light_Orange_fl:214,
+    Green:18,// 21
+    Green_fl:218,
+    Cold_Green:22,
+    Cold_Green_fl:222,
+    Bluish_Green:65,
+    Bluish_Green_fl:265,
+    Blue:66, //67
+    Blue_fl:266,
+    Light_Purple:52,
+    Light_Purple_fl:252,
+    Light_Pink:56,
+    Light_Pink_fl:256,
+    Skin:107, //108 105
+    Skin_fl:326,
+    Redish_Brown:126,
+    Redish_Brown_fl:326,
+    Light_Brown:12,
+    Light_Brown_fl:212,
+    Light_Green:17,
+    Light_Green_fl:217,
+    Grass_Green:21,
+    Grass_Green_fl:221,
+    Light_Blue:34,
+    Light_Blue_fl:234,
+    Greenish_Blue:37,
+    Greenish_Blue_fl:237,
+
+    OFF:0,
+    DARK_GRAY: 1,
     WHITE: 3, //8 119
     PEACH: 108,
-    PINK: 4 //95
+    LIME:74,
+    HEADER:mixColour(0,1,false),
+    PINK: 4, //95
+
+    RED_HALF:7, //7
+    RED:5, // 6
+    RED_FLASHING:205,
+
+    AMBER_HALF:14, //125 100 62
+    AMBER:96,
+    AMBER_FLASHING:294,
+
+    YELLOW:13, //12
+    YELLOW_HALF: 15, //113 8
+    YELLOW_FLASHING: 213, //126
+
+    DARK_YELLOW : 17,
+    DARK_YELLOW_HALF :19,
+
+    ORANGE:9, //84 61 96
+    ORANGE_HALF: 11,
+
+    DARK_ORANGE :84,
+
+    GREEN_HALF:27,  //19 22
+    GREEN:21,
+    GREEN_FLASHING:221, //73
+
+    DARK_BLUE_HALF:51, //15
+    DARK_BLUE:49, //13
+
+    BLUE:45,//78
+    BLUE_HALF:47, // 39  47 112 44 46  68
+    BLUE_FLASHING:245,
+
+    LIGHTBLUE_HALF:39, // 65 92 38
+    LIGHTBLUE:37, //114
+
+    VIOLET:48,
+    VIOLET_HALF:51, // 39  47 112 44 46  68
+    LIGHT_VIOLET:116, //116
+    VIOLET_FLASHING:248, //68
+
+    GRAY:3,
+    GRAY_HALF: 117,//1 71 118
+
+    MINT :29,
+    MINT_HALF :31,
+
+    PURPLE:53,
+    PURPLE_HALF: 55
+
 };
+
+
+
+
+var RGB_COLORS =
+    [
+        [ 0.3294117748737335 , 0.3294117748737335 , 0.3294117748737335 , Colour.Dark_Gray ],
+        [ 0.47843137383461   , 0.47843137383461   , 0.47843137383461   , Colour.Gray ],
+        [ 0.7882353067398071 , 0.7882353067398071 , 0.7882353067398071 , Colour.Light_Gray ],
+        [ 0.5254902243614197 , 0.5372549295425415 , 0.6745098233222961 , Colour.Silver ],
+        [ 0.6392157077789307 , 0.4745098054409027 , 0.26274511218070984, Colour.Dark_Brown ],
+        [ 0.7764706015586853 , 0.6235294342041016 , 0.43921568989753723, Colour.Brown ],
+        [ 0.34117648005485535, 0.3803921639919281 , 0.7764706015586853 , Colour.Dark_Blue ],
+        [ 0.5176470875740051 , 0.5411764979362488 , 0.8784313797950745 , Colour.Purplish_Blue ],
+        [ 0.5843137502670288 , 0.2862745225429535 , 0.7960784435272217 , Colour.Purple ],
+        [ 0.8509804010391235 , 0.21960784494876862, 0.4431372582912445 , Colour.Pink ],
+        [ 0.8509804010391235 , 0.18039216101169586, 0.1411764770746231 , Colour.Red ],
+        [ 1                  , 0.34117648005485535, 0.0235294122248888 , Colour.Orange ],
+        [ 0.8509804010391235 , 0.615686297416687  , 0.062745101749897  , Colour.Light_Orange ],
+        [ 0.45098039507865906, 0.5960784554481506 , 0.0784313753247261 , Colour.Green ],
+        [ 0                  , 0.615686297416687  , 0.27843138575553894, Colour.Cold_Green ],
+        [ 0                  , 0.6509804129600525 , 0.5803921818733215 , Colour.Bluish_Green ],
+        [ 0                  , 0.6000000238418579 , 0.8509804010391235 , Colour.Blue ],
+        [ 0.7372549176216125 , 0.4627451002597809 , 0.9411764740943909 , Colour.Light_Purple ],
+        [ 0.8823529481887817 , 0.4000000059604645 , 0.5686274766921997 , Colour.Light_Pink ],
+        [ 0.9254902005195618 , 0.3803921639919281 , 0.34117648005485535, Colour.Skin ],
+        [ 1                  , 0.5137255191802979 , 0.24313725531101227, Colour.Redish_Brown ],
+        [ 0.8941176533699036 , 0.7176470756530762 , 0.30588236451148987, Colour.Light_Brown ],
+        [ 0.6274510025978088 , 0.7529411911964417 , 0.2980392277240753 , Colour.Light_Green ],
+        [ 0.24313725531101227, 0.7333333492279053 , 0.3843137323856354 , Colour.Grass_Green ],
+        [ 0.26274511218070984, 0.8235294222831726 , 0.7254902124404907 , Colour.Light_Blue ],
+        [ 0.2666666805744171 , 0.7843137383460999 , 1                  , Colour.Greenish_Blue ]
+    ];
+
+
+
 
 // defines the LED locations with the pending and active LED arrays for the lights
 // They are used in the format LED.SCENE
