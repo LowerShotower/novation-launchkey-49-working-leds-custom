@@ -1124,7 +1124,7 @@ gridPage.updateTrackValue = function(track) {
         for (var scene = 0; scene < 2; scene++) {
             var i = track + scene * 8;
 
-            var col = arm[track] ? trackColor[track] : ( trackExists[track]) ? trackColor[track] : Colour.OFF;
+            var col = arm[track] ? (trackColor[track]+ 200) : ( trackExists[track]) ? trackColor[track] : Colour.OFF;
 
             //var fullval = mute[track] ? 1 : 3;
 

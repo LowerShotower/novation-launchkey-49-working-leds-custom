@@ -50,17 +50,17 @@ function mixColour(red, green, blink)
 var Colour = // Novation are from the UK
 {
     Dark_Gray:71,//117 71
-    Dark_Gray_fl:201,
-    Gray:118,//118
-    Gray_fl:202,
+    Dark_Gray_fl:271,
+    Gray:117,//118
+    Gray_fl:317,
     Light_Gray:119,//119 70
-    Light_Gray_fl:203,
+    Light_Gray_fl:319,
     Silver:115,
     Silver_fl:315,
     Dark_Brown:83,
-    Dark_Brown_fl:305,
+    Dark_Brown_fl:283,
     Brown:105,
-    Brown_fl:262,
+    Brown_fl:305,
     Dark_Blue:51, //112
     Dark_Blue_fl:251,
     Purplish_Blue:112,
@@ -68,9 +68,9 @@ var Colour = // Novation are from the UK
     Purple:55,
     Purple_fl:255,
     Pink:57,
-    Pink_fl:247,
+    Pink_fl:257,
     Red:6,
-    Red_fl:205,
+    Red_fl:206,
     Orange:10,
     Orange_fl:210,
     Light_Orange:14, //9
@@ -88,7 +88,7 @@ var Colour = // Novation are from the UK
     Light_Pink:56,
     Light_Pink_fl:256,
     Skin:107, //108 105
-    Skin_fl:326,
+    Skin_fl:307,
     Redish_Brown:126,
     Redish_Brown_fl:326,
     Light_Brown:12,
@@ -150,7 +150,7 @@ var Colour = // Novation are from the UK
     VIOLET_FLASHING:248, //68
 
     GRAY:3,
-    GRAY_HALF: 117,//1 71 118
+    GRAY_HALF: 71,//1 71 118
 
     MINT :29,
     MINT_HALF :31,
