@@ -26,6 +26,8 @@ NEW_UPDATE__09_02_18: Send section was implemented. Is switched on/off by pressi
 
 NEW_UPDATE__11_02_18:  Master_button indication after device is switched off/on has been fixed.  Switch between modes has been fixed. Quantize has been implemented (press Master,then fb_6). 
 
+Holding Loop_btn, then pressing rb1 or rb2 while clips in this two scenes are playing will stop playing clips ONLY in the appropriate scene.
+
 Keybindings have been changed:
 
 Master_btn__off: fb1 - Device, fb2 - send,  fb3 - none, fb4 - Layout, fb5,6,7,8 - as usual. 
