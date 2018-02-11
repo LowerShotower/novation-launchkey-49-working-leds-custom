@@ -19,7 +19,9 @@ gridPage.updateOutputState = function()
    this.updateGrid();
 };
 
-
+gridPage.setPreviousTempMode = function (prevTM) {
+    gridPage.previousTempMode = prevTM;
+}
 
 //stop/plaay/loop etc section, incontrol section, fader buttons section-------------------------------------------------
 gridPage.onOtherButton = function(buttonId, isPressed)
@@ -30,15 +32,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
 		case OtherButton.MASTER:
 			if (isPressed)
 			{
-				if (!IS_MASTER_TOGGLED)
-				{
-					host.getMidiOutPort(1).sendMidi(191,59,127);
-				}
-				else
-				{
-					host.getMidiOutPort(1).sendMidi(191,59,0);
-				}
-				IS_MASTER_TOGGLED =!IS_MASTER_TOGGLED;
+                setMasterLED(IS_MASTER_TOGGLED);
  			}
  		break;
 
@@ -80,47 +74,80 @@ gridPage.onOtherButton = function(buttonId, isPressed)
  		switch (buttonId)
  		{
 	 		case OtherButton.FB1:
-
+                if (isPressed)
+                {
+                    this.setTempMode(TempMode.CUT);
+                    host.showPopupNotification("PADS: CUT");
+                }
+                else
+                {
+                    this.setTempMode(TempMode.OFF);
+                    host.showPopupNotification("PADS: MIX");
+                }
 	 		break;
 
 	 		case OtherButton.FB2:
-	 			//if (isPressed) {application.setPanelLayout("EDIT");}
+                if (isPressed)
+                {
+                    this.setTempMode(TempMode.COPY);
+                    host.showPopupNotification("PADS: COPY");
+                }
+                else
+                {
+                    this.setTempMode(TempMode.OFF);
+                    host.showPopupNotification("PADS: MIX");
+                }
 	 		break;
 
 	 		case OtherButton.FB3:
 	 			//if (isPressed) {application.previousPanelLayout();}
+                if (isPressed) {
+
+                }
+
 	 		break;
 
 	 		case OtherButton.FB4:
-	 			if (isPressed) 
-	 			{
-
+                if (isPressed) {
+                    if (TEMPMODE != TempMode.COLOR_RGB) {
+                        isRGBOn = true;
+                        this.setTempMode(TempMode.COLOR_RGB);
+                        host.showPopupNotification("COLOR: RGB");
+                        this.setPreviousTempMode(TempMode.COLOR_RGB);
+                    }
+                    else {
+                        isRGBOn = false;
+                        this.setTempMode(TempMode.OFF);
+                        host.showPopupNotification("COLOR: SIMPLE");
+                        this.setPreviousTempMode(TempMode.OFF);
+                    }
+                }
+                else
+                {
+                    setMasterLED(IS_MASTER_TOGGLED);
                 }
             break;
 
 	 		case OtherButton.FB5:
 	 			if (isPressed) 
 	 			{
-	 				this.setTempMode(TempMode.COPY);
-	 				host.showPopupNotification("PADS: COPY");
+
 	 			}
 	 			else 
 	 			{
-	 				this.setTempMode(TempMode.OFF);
-	 				host.showPopupNotification("PADS: MIX");
+
 	 			}
 	 		break;
 
 	 		case OtherButton.FB6:
-	 			if (isPressed) 
+	 			if (isPressed)
 	 			{
-	 				this.setTempMode(TempMode.CUT);
-	 				host.showPopupNotification("PADS: CUT");
+                    cursorClip.quantize(1);
+                    host.showPopupNotification("QUANTIZED");
 	 			}
-	 			else 
+	 			else
 	 			{
-	 				this.setTempMode(TempMode.OFF);
-	 				host.showPopupNotification("PADS: MIX");
+
 	 			}
 	 		break;
 
@@ -148,13 +175,14 @@ gridPage.onOtherButton = function(buttonId, isPressed)
                     {
                         this.setTempMode(TempMode.DEVICE);
                         host.showPopupNotification("PADS: DEVICE");
-                        mixerButtonToggle = true;
+                        this.setPreviousTempMode(TempMode.DEVICE);
                     }
                     else
                     {
                         this.setTempMode(TempMode.OFF);
                         host.showPopupNotification("PADS: MIX");
                         mixerButtonToggle = false;
+                        this.setPreviousTempMode(TempMode.OFF);
                     }
                 }
 	 		break;
@@ -168,11 +196,13 @@ gridPage.onOtherButton = function(buttonId, isPressed)
                    {
                        this.setTempMode(TempMode.SEND);
                        host.showPopupNotification("PADS: SEND");
+                       this.setPreviousTempMode(TempMode.SEND);
                    }
                    else
                    {
                        this.setTempMode(TempMode.OFF);
                        host.showPopupNotification("PADS:MIX");
+                       this.setPreviousTempMode(TempMode.OFF);
                    }
 
 
@@ -195,21 +225,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
 	 		break;
 
 	 		case OtherButton.FB3:
-                if (isPressed) {
-                    if (TEMPMODE != TempMode.COLOR_RGB) {
-                        isRGBOn = true;
-                        this.setTempMode(TempMode.COLOR_RGB);
-                        host.showPopupNotification("COLOR: RGB");
 
-                    }
-                    else {
-                        isRGBOn = false;
-                        this.setTempMode(TempMode.OFF);
-                        host.showPopupNotification("COLOR: SIMPLE");
-
-
-                    }
-                }
 
 	 		break;
 
@@ -267,7 +283,8 @@ gridPage.onOtherButton = function(buttonId, isPressed)
                 {
                     this.setTempMode(this.previousTempMode);
                     host.showPopupNotification("PADS: MIX");
-                }break;
+                }
+                break;
 	 	}
 	}
 
@@ -485,7 +502,7 @@ gridPage.onFaders = function (inControl, data1, data2)
         }
         else if (data1 == 7)
         {
-            masterTrack_0.getVolume().set(data2, 128);
+            masterTrack.getVolume().set(data2, 128);
         }
 	}
     else if (inControl == false)
@@ -497,8 +514,8 @@ gridPage.onFaders = function (inControl, data1, data2)
         }
         else if (data1 == 7)
         {
-            //cursorTrack_0.getVolume().set(data2, 128);
-            masterTrack_0.getVolume().set(data2, 128);
+            //cursorTrack.getVolume().set(data2, 128);
+            masterTrack.getVolume().set(data2, 128);
         }
        else if (data1 >= 51 && data1 <= 58)
        {
@@ -590,10 +607,10 @@ gridPage.onSceneButton = function(row, isPressed)
 		   if (row == 0) {
 
 		   	if(IS_LOOP_PRESSED) {
-		   		cursorDevice_0.browseToInsertAfterDevice();
+		   		cursorDevice.browseToInsertAfterDevice();
 			} else {
-		   		if (numDevices == 0) cursorTrack_0.browseToInsertAtEndOfChain();
-		   		if (numDevices>0) cursorDevice_0.browseToReplaceDevice();
+		   		if (numDevices == 0) cursorTrack.browseToInsertAtEndOfChain();
+		   		if (numDevices>0) cursorDevice.browseToReplaceDevice();
                 host.showPopupNotification(numDevices);
 
 		   	}
@@ -601,7 +618,7 @@ gridPage.onSceneButton = function(row, isPressed)
 
 		   }
 		   else if (row == 1) {
-		   	cursorTrack_0.selectInEditor();
+		   	cursorTrack.selectInEditor();
                application.remove();
 		   }
    		}
@@ -620,7 +637,7 @@ gridPage.onSceneButton = function(row, isPressed)
                         popupBrowser.cancel();
                     } else
 					{
-                        cursorTrack_0.browseToInsertAtEndOfChain();
+                        cursorTrack.browseToInsertAtEndOfChain();
 					}
                 }
 
@@ -657,7 +674,7 @@ gridPage.onLeft = function(isPressed)
    {
    		if(indexToStart > 0) {	indexToStart--; }
 
-        trackBank.scrollTracksUp();
+        trackBank.scrollChannelsUp();
 
    }
 };
@@ -669,7 +686,7 @@ gridPage.onRight = function(isPressed)
    {
    		if( indexToStart < (numTracks-NUM_TRACKS) ) { indexToStart++; }
 
-        trackBank.scrollTracksDown();
+        trackBank.scrollChannelsDown();
    }
 };
 
@@ -678,7 +695,7 @@ gridPage.onUp = function(isPressed)
 	//UP action
    if (isPressed)
    {
-      trackBank.scrollScenesUp(); trackBankAll.scrollScenesUp();
+      trackBank.sceneBank().scrollUp(); trackBankAll.sceneBank().scrollUp();
    }
 };
 
@@ -687,7 +704,7 @@ gridPage.onDown = function(isPressed)
 	//DOWN action
    if (isPressed)
    {
-      trackBank.scrollScenesDown(); trackBankAll.scrollScenesDown();
+      trackBank.sceneBank().scrollDown(); trackBankAll.sceneBank().scrollDown();
    }
 };
 
@@ -780,10 +797,10 @@ gridPage.onGridButton = function(row, column, isPressed)
            else if (padNo >= 8 && padNo < 16)
            {
                var padInRow = padNo-8;
-               cursorDevice_0.selectDevice(deviceBank_0.getDevice(padInRow));
+               cursorDevice.selectDevice(deviceBank.getDevice(padInRow));
 
-               cursorDevice_0.isRemoteControlsSectionVisible().set(true);
-               deviceBank_0.scrollUp();
+               cursorDevice.isRemoteControlsSectionVisible().set(true);
+               deviceBank.scrollUp();
            }
        }
    }
@@ -798,7 +815,7 @@ gridPage.onGridButton = function(row, column, isPressed)
 	   		{
 	   			case 0:
 					//trackBank.getTrack(column).select();
-                    cursorTrack_0.select();
+                    cursorTrack.select();
                     application.remove();
                     host.showPopupNotification("remove");
 	   				break;
@@ -1303,7 +1320,6 @@ gridPage.setTempMode = function(mode)
        TEMPMODE = (TempMode.COLOR_RGB);
        return;
    }
-    this.previousTempMode =TEMPMODE;
 
     TEMPMODE = mode;
 
@@ -1323,14 +1339,25 @@ gridPage.setTempMode = function(mode)
 };
 
 
+gridPage.makeSwitchLayout = function () {
+    var j = 0;
+    return function (array)
+    {
+        application.setPanelLayout(array[j]);
+        j++;
+        if(j==array.length)  j=0;
 
+    }
+}
+
+gridPage.switchLayout = gridPage.makeSwitchLayout();
 
 
 // functionality to change layouts or subpanels-------------------------------------------------------------------------
 gridPage.switchLayoutOrPanel = function (shiftButton) {
     if (!shiftButton)
     {
-        application.nextPanelLayout();
+        this.switchLayout(panelLayoutNames);
     }
     else if (shiftButton)
     {

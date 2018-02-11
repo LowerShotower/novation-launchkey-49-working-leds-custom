@@ -83,7 +83,7 @@ var trackExists = initArray(0, 8);
 var trackColorRGB = [[,,],[,,],[,,],[,,],[,,],[,,],[,,],[,,]];
 var trackColor = initArray(0,8);
 //var sendExists = initArray (0, 8);
-
+var panelLayoutNames = ["EDIT","MIX","ARRANGE"];
 var vuMeter = initArray(0, 8);
 var masterVuMeter = 0;
 
@@ -230,29 +230,46 @@ function init()
    application = host.createApplication();
    popupBrowser = host.createPopupBrowser();
 
-    //For popup browser column nav
+   //For popup browser column nav
    deviceTypeCursorItem = popupBrowser.deviceTypeColumn().createCursorItem();
    locationCursorItem = popupBrowser.locationColumn().createCursorItem();
    deviceCursorItem = popupBrowser.deviceColumn().createCursorItem();
    categoryCursorItem = popupBrowser.categoryColumn().createCursorItem();
    tagCursorItem = popupBrowser.tagColumn().createCursorItem();
 
-   cursorTrack_0 = host.createCursorTrackSection(0, 8);
-   masterTrack_0 = host.createMasterTrackSection(0);
 
-   deviceBank_0 = cursorTrack_0.createDeviceBank(NUM_DEVICES);
-   primaryDevice_0 = cursorTrack_0.createCursorDevice("Primary");//deprecated. need to be deleted
-   cursorDevice_0 = cursorTrack_0.createCursorDevice();
+   // Cursor track allow selection of a track
+   cursorTrack = host.createCursorTrack(0, 8);
+   deviceBank = cursorTrack.createDeviceBank(NUM_DEVICES);
+   primaryDevice = cursorTrack.createCursorDevice("Primary");
 
+    // Created a Cursor Clip section. I believe this section is used to create a section used on the Drum Machine device
+    // ToDO: host.createCursorClipSection is deprecated and should be updated
+    cursorClip = host.createLauncherCursorClip(128, 128);
+    //cursorClip.addStepDataObserver(seqPage.onStepExists);
+    //cursorClip.scrollToKey(0)
+   
+   
+    cursorDevice = cursorTrack.createCursorDevice();
+    cursorRCPage = cursorDevice.createCursorRemoteControlsPage(8);
+    cursorDeviceBrowser = cursorDevice.createDeviceBrowser(40,40);
 
-  cursorRCPage = cursorDevice_0.createCursorRemoteControlsPage(8);
-   cursorDeviceBrowser = cursorDevice_0.createDeviceBrowser(40,40);
     // a Trackbank is the tracks, sends and scenes being controlled, these arguments are set to 8,2,8 in the
     // launchpad_constants.js file changing them will change the size of the grid displayed on the Bitwig Clip Launcher
     trackBank = host.createMainTrackBank(NUM_TRACKS, NUM_SENDS, NUM_SCENES);
     trackBankAll = host.createMainTrackBank(NUM_TRACKS_ALL, 0 , 2);
 
 
+    //cursorTrack.addNoteObserver(seqPage.onNotePlay);
+    //deviceBank = cursorTrack.createDeviceBank(1);
+
+    // Picks up the Master Track from Bitwig for use displaying the VuMeter
+    masterTrack = host.createMasterTrack(0);
+
+    masterTrack.addVuMeterObserver(8, -1, true, function(level)
+    {
+        masterVuMeter = level;
+    });
 
 
 
@@ -340,7 +357,7 @@ function init()
 
 
 
-   deviceBank_0.itemCount().addValueObserver(function (value){
+   deviceBank.itemCount().addValueObserver(function (value){
        numDevices= value;}, 0 );
 
    cursorRCPage.selectedPageIndex().addValueObserver(function (value){
@@ -349,10 +366,10 @@ function init()
    cursorRCPage.pageNames().addValueObserver(function (value){
         numRCPages= value.length;} );
 
-   cursorDevice_0.position().addValueObserver(function (value){
+   cursorDevice.position().addValueObserver(function (value){
         cursorDevicePosition = value;}, -1 );
 
-   cursorDevice_0.name().addValueObserver(function (value){
+   cursorDevice.name().addValueObserver(function (value){
         cursorDeviceName = value;} );
 
 
@@ -379,17 +396,7 @@ function init()
    });
 
 
-    // Cursor track allow selection of a track
-   cursorTrack = host.createArrangerCursorTrack(0, 0);
-   //cursorTrack.addNoteObserver(seqPage.onNotePlay);
-   deviceBank = cursorTrack.createDeviceBank(1);
 
-     // Picks up the Master Track from Bitwig for use displaying the VuMeter
-   masterTrack = host.createMasterTrack(0);
-   masterTrack.addVuMeterObserver(8, -1, true, function(level)
-   {
-      masterVuMeter = level;
-   });
 
    // Picks up the controllable knobs, buttons which have been set via "Learn Controller Assignment". There are 24 set
     // here because there are 3 pages of user controls with 8 assignable controls on each
@@ -403,11 +410,7 @@ function init()
       control.setLabel("U" + (u+1));
    }
 
-   // Created a Cursor Clip section. I believe this section is used to create a section used on the Drum Machine device
-   // ToDO: host.createCursorClipSection is deprecated and should be updated
-   //cursorClip = host.createCursorClip(SEQ_BUFFER_STEPS, 128);
-   //cursorClip.addStepDataObserver(seqPage.onStepExists);
-   //cursorClip.scrollToKey(0);
+   ;
 
     //?????????????????????????????????????????????????????????????????????????????????????????
    for(var p=0; p<8; p++)
@@ -437,6 +440,7 @@ function resetDevice()
       pendingLEDs[i] = 0;
    };
    flushLEDs();
+    host.getMidiOutPort(1).sendMidi(191,59,0);
 }
 
 
@@ -446,7 +450,7 @@ function updateIndications()
 {
    for(var i=0; i<8; i++)
    {
-      //cursorDevice_0.getParameter(i).setIndication(incontrol_knobs);
+      //cursorDevice.getParameter(i).setIndication(incontrol_knobs);
       trackBank.getTrack(i).getVolume().setIndication(incontrol_mix);
    }
 }
@@ -629,6 +633,19 @@ function setCellLED(column,row, colour)
    var key = row * 8 + column;
    pendingLEDs[key] = colour;
 }
+
+function setMasterLED(isToggled)
+    {
+        if (!isToggled)
+        {
+            host.getMidiOutPort(1).sendMidi(191,59,127);
+        }
+        else
+        {
+            host.getMidiOutPort(1).sendMidi(191,59,0);
+        }
+        IS_MASTER_TOGGLED =!isToggled;
+    }
 
 
 
