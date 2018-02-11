@@ -74,7 +74,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
  	}
 
 
- 	//FADERS Button's actions in inControl Mode
+ 	//FADERS Button actions in inControl Mode
 	if (IS_MASTER_TOGGLED) 
 	{
  		switch (buttonId)
@@ -494,7 +494,6 @@ gridPage.onFaders = function (inControl, data1, data2)
         {
             var sliderIndex = data1 - 41;
 
-            //????????????primaryDevice_0.getMacro(sliderIndex).getAmount().set(data2, 128);
         }
         else if (data1 == 7)
         {
@@ -1096,7 +1095,7 @@ gridPage.updateTrackValue = function(track) {
                     }
                 }
                 else {
-                    col = Colour.AMBER;
+                    col = Colour.YELLOW;
                 }
             }
 
@@ -1155,7 +1154,7 @@ gridPage.updateTrackValue = function(track) {
                     }
                 }
                 else {
-                    col = Colour.AMBER;
+                    col = Colour.YELLOW;
                 }
             }
 

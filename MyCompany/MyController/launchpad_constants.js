@@ -49,11 +49,11 @@ function mixColour(red, green, blink)
 // Defines the values to be sent for the colours
 var Colour = // Novation are from the UK
 {
-    Dark_Gray:71,//117 71
+    Dark_Gray:71,
     Dark_Gray_fl:271,
-    Gray:117,//118
+    Gray:117,
     Gray_fl:317,
-    Light_Gray:119,//119 70
+    Light_Gray:119,
     Light_Gray_fl:319,
     Silver:115,
     Silver_fl:315,
@@ -61,7 +61,7 @@ var Colour = // Novation are from the UK
     Dark_Brown_fl:283,
     Brown:105,
     Brown_fl:305,
-    Dark_Blue:51, //112
+    Dark_Blue:51,
     Dark_Blue_fl:251,
     Purplish_Blue:112,
     Purplish_Blue_fl:312,
@@ -73,30 +73,35 @@ var Colour = // Novation are from the UK
     Red_fl:206,
     Orange:10,
     Orange_fl:210,
-    Light_Orange:14, //9
-    Light_Orange_fl:214,
-    Green:18,// 21
+    Light_Orange:100,
+    Light_Orange_fl:300,
+
+    Green:18,
     Green_fl:218,
     Cold_Green:22,
     Cold_Green_fl:222,
     Bluish_Green:65,
     Bluish_Green_fl:265,
-    Blue:66, //67
+    Blue:66,
     Blue_fl:266,
+
     Light_Purple:52,
     Light_Purple_fl:252,
     Light_Pink:56,
     Light_Pink_fl:256,
-    Skin:107, //108 105
+
+    Skin:107,
     Skin_fl:307,
     Redish_Brown:126,
     Redish_Brown_fl:326,
-    Light_Brown:12,
-    Light_Brown_fl:212,
+    Light_Brown:15, //62 12
+    Light_Brown_fl:309,
+
     Light_Green:17,
     Light_Green_fl:217,
     Grass_Green:21,
     Grass_Green_fl:221,
+
     Light_Blue:34,
     Light_Blue_fl:234,
     Greenish_Blue:37,
@@ -104,63 +109,60 @@ var Colour = // Novation are from the UK
 
     OFF:0,
     DARK_GRAY: 1,
-    WHITE: 3, //8 119
+    WHITE: 3,
     PEACH: 108,
     LIME:74,
     HEADER:mixColour(0,1,false),
-    PINK: 4, //95
+    PINK: 4,
 
-    RED_HALF:7, //7
-    RED:5, // 6
+    RED_HALF:7,
+    RED:5,
     RED_FLASHING:205,
 
-    AMBER_HALF:14, //125 100 62
+    AMBER_HALF:11,
     AMBER:96,
     AMBER_FLASHING:294,
 
-    YELLOW:13, //12
-    YELLOW_HALF: 15, //113 8
-    YELLOW_FLASHING: 213, //126
+    YELLOW:13,
+    YELLOW_HALF: 15,
+    YELLOW_FLASHING: 213,
 
     DARK_YELLOW : 17,
     DARK_YELLOW_HALF :19,
 
-    ORANGE:9, //84 61 96
+    ORANGE:9,
     ORANGE_HALF: 11,
 
     DARK_ORANGE :84,
 
-    GREEN_HALF:27,  //19 22
+    GREEN_HALF:27,
     GREEN:21,
-    GREEN_FLASHING:221, //73
+    GREEN_FLASHING:221,
 
-    DARK_BLUE_HALF:51, //15
-    DARK_BLUE:49, //13
+    DARK_BLUE_HALF:51,
+    DARK_BLUE:49,
 
-    BLUE:45,//78
-    BLUE_HALF:47, // 39  47 112 44 46  68
+    BLUE:45,
+    BLUE_HALF:47,
     BLUE_FLASHING:245,
 
-    LIGHTBLUE_HALF:39, // 65 92 38
-    LIGHTBLUE:37, //114
+    LIGHTBLUE_HALF:39,
+    LIGHTBLUE:37,
 
     VIOLET:48,
-    VIOLET_HALF:51, // 39  47 112 44 46  68
-    LIGHT_VIOLET:116, //116
-    VIOLET_FLASHING:248, //68
+    VIOLET_HALF:51,
+    LIGHT_VIOLET:116,
+    VIOLET_FLASHING:248,
 
     GRAY:2,
-    GRAY_HALF: 71,//1 71 118
+    GRAY_HALF: 71,
 
     MINT :29,
     MINT_HALF :31,
 
     PURPLE:53,
     PURPLE_HALF: 55
-
 };
-
-
 
 
 var RGB_COLORS =
@@ -192,8 +194,6 @@ var RGB_COLORS =
         [ 0.26274511218070984, 0.8235294222831726 , 0.7254902124404907 , Colour.Light_Blue ],
         [ 0.2666666805744171 , 0.7843137383460999 , 1                  , Colour.Greenish_Blue ]
     ];
-
-
 
 
 // defines the LED locations with the pending and active LED arrays for the lights
