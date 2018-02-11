@@ -1261,7 +1261,7 @@ gridPage.updateTrackValue = function(track) {
 
         if (trackExists[track]) {
             setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_HALF : Colour.GREEN);
-            setCellLED(track, 1, arm[track] ? Colour.RED : Colour.LIGHTBLUE);
+            setCellLED(track, 1, arm[track] ? Colour.RED : Colour.LIGHT_BLUE);
         }
     }
 
@@ -1269,7 +1269,7 @@ gridPage.updateTrackValue = function(track) {
 
         if (trackExists[track]) {
             setCellLED(track, 0, isMatrixStopped[track] ? Colour.AMBER_HALF : Colour.GREEN);
-            setCellLED(track, 1, isSelected[track] ? Colour.LIGHTBLUE : Colour.LIGHTBLUE_HALF );
+            setCellLED(track, 1, isSelected[track] ? Colour.LIGHT_BLUE : Colour.LIGHT_BLUE_HALF );
         }
     }
 
@@ -1355,11 +1355,11 @@ gridPage.switchLayout = gridPage.makeSwitchLayout();
 
 // functionality to change layouts or subpanels-------------------------------------------------------------------------
 gridPage.switchLayoutOrPanel = function (shiftButton) {
-    if (!shiftButton)
+    if (shiftButton)
     {
         this.switchLayout(panelLayoutNames);
     }
-    else if (shiftButton)
+    else if (!shiftButton)
     {
         application.nextSubPanel();
     }

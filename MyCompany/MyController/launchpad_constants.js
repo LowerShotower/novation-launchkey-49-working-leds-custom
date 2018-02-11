@@ -95,7 +95,7 @@ var Colour = // Novation are from the UK
     Redish_Brown:126,
     Redish_Brown_fl:326,
     Light_Brown:15, //62 12
-    Light_Brown_fl:309,
+    Light_Brown_fl:215,
 
     Light_Green:17,
     Light_Green_fl:217,
@@ -121,7 +121,7 @@ var Colour = // Novation are from the UK
 
     AMBER_HALF:11,
     AMBER:96,
-    AMBER_FLASHING:294,
+    AMBER_FLASHING:296,
 
     YELLOW:13,
     YELLOW_HALF: 15,
@@ -132,6 +132,7 @@ var Colour = // Novation are from the UK
 
     ORANGE:9,
     ORANGE_HALF: 11,
+    ORANGE:209,
 
     DARK_ORANGE :84,
 
@@ -146,8 +147,8 @@ var Colour = // Novation are from the UK
     BLUE_HALF:47,
     BLUE_FLASHING:245,
 
-    LIGHTBLUE_HALF:39,
-    LIGHTBLUE:37,
+    LIGHT_BLUE_HALF:39,
+    LIGHT_BLUE:37,
 
     VIOLET:48,
     VIOLET_HALF:51,
@@ -156,6 +157,7 @@ var Colour = // Novation are from the UK
 
     GRAY:2,
     GRAY_HALF: 71,
+    GRAY_FLASHING:202,
 
     MINT :29,
     MINT_HALF :31,
