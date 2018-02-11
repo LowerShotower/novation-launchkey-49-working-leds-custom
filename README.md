@@ -22,4 +22,9 @@ If you switch off inControl_faders_btn , then fb 1-8 will be used to select trac
 
 NEW_UPDATE__09_02_18: Send section was implemented. Is switched on/off by pressing fader_button_2. Also some constant colours were replaced.  Getting the color of tracks was implemented. It is  switched on/off by pressing fader_button_3 
 
+NEW_UPDATE__11_02_18:  Master_button indication after device is switched off/on has been fixed.  Switch between modes has been fixed. Quantize has been implemented (press Master,then fb_6). 
+Keybindings have been changed:
+Master_btn__off: fb1 - Device, fb2 - send,  fb3 - none, fb4 - Layout, fb5,6,7,8 - as usual. 
+Master_btn__off: fb1 - Cut, fb2 - copy,  fb3 - none, fb4 - Color, fb5 - none, fb6 - quantize, fb7,8 - as usual. 
+
 
