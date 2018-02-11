@@ -33,6 +33,7 @@ Keybindings have been changed:
 Master_btn__off: fb1 - Device, fb2 - send,  fb3 - none, fb4 - Layout, fb5,6,7,8 - as usual. 
 
 Master_btn__on: fb1 - Cut, fb2 - copy,  fb3 - none, fb4 - Color, fb5 - none, fb6 - quantize, fb7,8 - as usual. 
+
 In bitwig there are two unrelated input devices: Launchpad 49 and Launchpad pads
 
 
