@@ -32,7 +32,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
 		case OtherButton.MASTER:
 			if (isPressed)
 			{
-                setMasterLED(IS_MASTER_TOGGLED);
+                switchMasterLED(IS_MASTER_TOGGLED);
  			}
  		break;
 
@@ -104,10 +104,11 @@ gridPage.onOtherButton = function(buttonId, isPressed)
                 if (isPressed)
                 {
                     application.createInstrumentTrack(-1);
+
                 }
                 else
                 {
-
+                    switchMasterLED(true);
                 }
 
 	 		break;
@@ -129,7 +130,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
                 }
                 else
                 {
-                    setMasterLED(IS_MASTER_TOGGLED);
+                    switchMasterLED(true);
                 }
             break;
 

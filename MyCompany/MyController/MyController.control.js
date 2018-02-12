@@ -438,7 +438,7 @@ function init()
 function resetDevice()
 {
    resetGrid();
-    resetMasterLED();
+    reswitchMasterLED();
 }
 
 function resetGrid() {
@@ -449,7 +449,7 @@ function resetGrid() {
     flushLEDs();
 }
 
-function resetMasterLED() {
+function reswitchMasterLED() {
     host.getMidiOutPort(1).sendMidi(191,59,0);
     IS_MASTER_TOGGLED=false;
 }
@@ -643,7 +643,7 @@ function setCellLED(column,row, colour)
    pendingLEDs[key] = colour;
 }
 
-function setMasterLED(isToggled)
+function switchMasterLED(isToggled)
     {
         if (!isToggled)
         {
