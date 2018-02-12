@@ -427,7 +427,10 @@ gridPage.makeScrollPot = function () {
         }
 
         var dif = data2 -prevData;
-        var div = Math.floor(resolution/steps);
+
+        var div = resolution/steps;
+
+        if (div>=1){div = Math.floor(div);}
 
         if (dif >=  div) {
             func2(knob);

@@ -132,7 +132,7 @@ var Colour = // Novation are from the UK
 
     ORANGE:9,
     ORANGE_HALF: 11,
-    ORANGE:209,
+    ORANGE_FLASHING:209,
 
     DARK_ORANGE :84,
 
