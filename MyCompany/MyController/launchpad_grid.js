@@ -419,6 +419,8 @@ gridPage.scrollToPrevious = function (knInd) {
 gridPage.makeScrollPot = function () {
     var prevData;
     var d;
+    var dif;
+    var div;
     return function (knob, data2, steps, resolution, func2, func1) {
 
         ////println(prevData);
@@ -426,9 +428,9 @@ gridPage.makeScrollPot = function () {
             prevData = data2;
         }
 
-        var dif = data2 -prevData;
+         dif = data2 -prevData;
 
-        var div = resolution/steps;
+         div = resolution/steps;
 
         if (div>=1){div = Math.floor(div);}
 
@@ -436,15 +438,17 @@ gridPage.makeScrollPot = function () {
             func2(knob);
             prevData = data2;
             d = div;
-            for ( ; d < 1; d += div) {
+            for ( ; d < 1; ) {
                 func2(knob);
+                d += div
 			}
         } else if (dif<= -div) {
             func1(knob);
             prevData = data2;
             d = div;
-            for ( ; d < 1; d += div) {
+            for ( ; d < 1; ) {
                 func1(knob);
+                d += div
             }
         }
 	};
