@@ -38,4 +38,6 @@ In bitwig there are two unrelated input devices: Launchpad 49 and Launchpad pads
 
 NEW_UPDATE__12_02_18: bug with auto shutdown of Master_btn as inControl_Prads_btn is pressed was fixed. Bug with  incorrect switching on off of drumpads/other modes was fixed. Popup browser scrolling was improved.
 
+Press Master_btn, then fb3 create New Instrument Track.
+
 
