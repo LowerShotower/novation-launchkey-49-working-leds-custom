@@ -101,7 +101,12 @@ gridPage.onOtherButton = function(buttonId, isPressed)
 
 	 		case OtherButton.FB3:
 	 			//if (isPressed) {application.previousPanelLayout();}
-                if (isPressed) {
+                if (isPressed)
+                {
+                    application.createInstrumentTrack(-1);
+                }
+                else
+                {
 
                 }
 
@@ -419,16 +424,18 @@ gridPage.makeScrollPot = function () {
         if (prevData === undefined) {
             prevData = data2;
         }
-        dif = data2 -prevData;
-        div = resolution/steps;
-        if (dif >  div) {
+
+        var dif = data2 -prevData;
+        var div = Math.floor(resolution/steps);
+
+        if (dif >=  div) {
             func2(knob);
             prevData = data2;
             d = div;
             for ( ; d < 1; d += div) {
                 func2(knob);
 			}
-        } else if (dif< -div) {
+        } else if (dif<= -div) {
             func1(knob);
             prevData = data2;
             d = div;
@@ -451,7 +458,7 @@ gridPage.onPots = function (inControl, data1, data2)
     var knobIndex = data1 - 21;
 	if (TEMPMODE == TempMode.EDIT || ( TEMPMODE == TempMode.DEVICE && isPopup) )
 	{
-		gridPage.scrollPot(knobIndex, data2, entryCount[knobIndex], 128,
+		gridPage.scrollPot(knobIndex, data2, entryCount[knobIndex], 127,
 							gridPage.scrollToNext, gridPage.scrollToPrevious );
 		/*//println("deviceType "+ entryCount['2']);
 		//println("location "+ entryCount['3']);

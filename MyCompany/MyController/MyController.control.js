@@ -162,6 +162,8 @@ function getEntryCountObserverFunc(keyName)
 {
     return function(value)
     {
+        if (value < 40) {value=40}
+
         entryCount[keyName] = value;
     }
 }
@@ -277,21 +279,22 @@ function init()
     entryCount[1] = 10;
 
     // It can be used to detect number of entries in specific column. This number is equal to amount of steps . It uses to scroll over great amount of entries
-    //popupBrowser.deviceTypeColumn().entryCount().addValueObserver(getEntryCountObserverFunc(3));
+    popupBrowser.deviceTypeColumn().entryCount().addValueObserver(getEntryCountObserverFunc(2));
+
     //it is fixed amount of available steps
-    entryCount[2] = 10;
+    //entryCount[2] = 10;
 
-    //popupBrowser.locationColumn().entryCount().addValueObserver(getEntryCountObserverFunc(4));
-    entryCount[3] = 100;
+    popupBrowser.locationColumn().entryCount().addValueObserver(getEntryCountObserverFunc(3));
+    //entryCount[3] = 100;
 
-    //popupBrowser.deviceColumn().entryCount().addValueObserver(getEntryCountObserverFunc(4));
-    entryCount[4] = 100;
+    popupBrowser.deviceColumn().entryCount().addValueObserver(getEntryCountObserverFunc(4));
+    //entryCount[4] = 100;
 
-    //popupBrowser.categoryColumn().entryCount().addValueObserver(getEntryCountObserverFunc(5));
-    entryCount[5] = 100;
+    popupBrowser.categoryColumn().entryCount().addValueObserver(getEntryCountObserverFunc(5));
+    //entryCount[5] = 100;
 
-    //popupBrowser.tagColumn().entryCount().addValueObserver(getEntryCountObserverFunc(6));
-    entryCount[6] = 100;
+    popupBrowser.tagColumn().entryCount().addValueObserver(getEntryCountObserverFunc(6));
+    //entryCount[6] = 100;
 
     popupBrowser.resultsColumn().entryCount().addValueObserver( getEntryCountObserverFunc(7) );
 
