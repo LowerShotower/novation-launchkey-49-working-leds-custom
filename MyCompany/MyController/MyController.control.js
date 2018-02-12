@@ -40,8 +40,6 @@ var TempMode =
 
 
 
-
-
 var TEMPMODE = -1;
 var numTracks; //used to know current number of tracks. Up to 64.
 var numSends = 0;//used to show the correct number of tracks that are displayed on grid
@@ -59,10 +57,11 @@ var sendBankIndex = 0;
 //var isInc = false;
 var isRGBOn = false;
 
-var entryCount = {};
+var entryCount = {};//entry count in popup columns
 var isPopup = false;
 
 
+var incontrol_pads=true;
 var incontrol_mix = true;
 var incontrol_knobs = true;
 
@@ -71,8 +70,8 @@ var IS_LOOP_PRESSED = false;
 var IS_SHIFT_PRESSED = false;
 
 // Declare arrays which are used to store information received from Bitwig about what is going on to display on pads
-var volume = initArray(0, 8);
-var pan = initArray(0, 8);
+//var volume = initArray(0, 8);
+//var pan = initArray(0, 8);
 var mute = initArray(0, 8);
 var solo = initArray(0, 8);
 var arm = initArray(0, 8);
@@ -435,15 +434,22 @@ function init()
 // Reset all lights by sending MIDI and sets all values in the pendingLEDs array to 0
 function resetDevice()
 {
-   for(var i=0; i<80; i++)
-   {
-      pendingLEDs[i] = 0;
-   };
-   flushLEDs();
-    host.getMidiOutPort(1).sendMidi(191,59,0);
+   resetGrid();
+    resetMasterLED();
 }
 
+function resetGrid() {
+    for(var i=0; i<80; i++)
+    {
+        pendingLEDs[i] = 0;
+    };
+    flushLEDs();
+}
 
+function resetMasterLED() {
+    host.getMidiOutPort(1).sendMidi(191,59,0);
+    IS_MASTER_TOGGLED=false;
+}
 
 
 function updateIndications()

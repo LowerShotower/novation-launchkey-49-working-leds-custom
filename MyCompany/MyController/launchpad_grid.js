@@ -289,7 +289,7 @@ gridPage.onOtherButton = function(buttonId, isPressed)
 	}
 
 
- 	//INCONTROL Button's actions
+ 	//INCONTROL Button actions
 	switch (buttonId)
 	{
  		case 13:
@@ -303,15 +303,15 @@ gridPage.onOtherButton = function(buttonId, isPressed)
 
    		case 15:
    			if (isPressed) {
-	   			this.setTempMode(TempMode.OFF);
-	   			mixerButtonToggle = true;
+   			    resetGrid();
+	   			this.setTempMode(this.previousTempMode);
 	   			host.showPopupNotification("PADS: MIX");
+	   			//incontrol_pads = true;
    			}
    			else {
-	   			this.setTempMode(TempMode.PADSOFF);
+	   			//this.setTempMode(TempMode.PADSOFF);
 	   			host.showPopupNotification("PADS: DRUMS");
-	   			mixerButtonToggle = false;
-	   			resetDevice();
+	   			//incontrol_pads = false;
    			}
         break;
 
@@ -1320,8 +1320,9 @@ gridPage.setTempMode = function(mode)
        TEMPMODE = (TempMode.COLOR_RGB);
        return;
    }
-
     TEMPMODE = mode;
+
+
 
    // This updates the indicators (The rainbow displays on dials for controlls (userControls number 3 is missing? from original script)
    for(var p=0; p<8; p++)
