@@ -12,6 +12,11 @@ for	(index = 127; index > -1; index--)
 }
 
 loadAPI(2);
+
+
+
+
+
 //application.setShouldFailOnDeprecatedUse(false);
 // TempMode is a variable used for the Temporary views used in ClipLauncher mode.
 var TempMode =
@@ -38,11 +43,14 @@ var TempMode =
     COLOR_RGB:19
 };
 
-
-
+var faders = initArray( {isCaptured:false} , 9);
+var knobs = initArray( {isCaptured:false} , 8);
+var trashhold =10;
+var scalingSpeedInSteps = 3;//for knobs and sliders
 var TEMPMODE = -1;
 var numTracks; //used to know current number of tracks. Up to 64.
 var numSends = 0;//used to show the correct number of tracks that are displayed on grid
+var sends = initArray (0,64);
 var indexToStart = 0; //index of track from which grid of clips will be drawn
 var isAllInRow = initArray(0,2); // array to hold information about stoped/launched clips in two rows
 var isCut = false;
@@ -61,6 +69,9 @@ var entryCount = {};//entry count in popup columns
 var isPopup = false;
 
 
+
+var isScalingMode = false;
+
 var incontrol_pads=true;
 var incontrol_mix = true;
 var incontrol_knobs = true;
@@ -70,7 +81,7 @@ var IS_LOOP_PRESSED = false;
 var IS_SHIFT_PRESSED = false;
 
 // Declare arrays which are used to store information received from Bitwig about what is going on to display on pads
-//var volume = initArray(0, 8);
+var volumes = initArray(0, 8);
 //var pan = initArray(0, 8);
 var mute = initArray(0, 8);
 var solo = initArray(0, 8);
@@ -86,6 +97,7 @@ var panelLayoutNames = ["EDIT","MIX","ARRANGE"];
 var vuMeter = initArray(0, 8);
 var masterVuMeter = 0;
 
+var cursorRCParameters = initArray (0,8);
 var userValue = initArray(0, 24);
 
 var hasContent = initArray(0, 64);
@@ -147,7 +159,7 @@ function setActivePage(page)
       // Update indications in the app
       for(var p=0; p<8; p++)
       {
-         var track = trackBank.getTrack(p);
+         var track = trackBank.getChannel(p);
          track.getClipLauncher().setIndication(activePage == gridPage);
       }
    }
@@ -177,6 +189,21 @@ function getTrackObserverFunc(track, varToStore)
    }
 }
 
+
+
+function getCursorRCObserverFunc(track, varToStore)
+{
+    return function(value)
+    {
+        varToStore[track] = value;
+        knobs[track].isCaptured=false;
+    }
+}
+
+
+
+
+
 function getTrackColorObserverFunc(track, varToStore)
 {
     return function(value1, value2, value3)
@@ -188,6 +215,15 @@ function getTrackColorObserverFunc(track, varToStore)
 }
 
 
+function getSendObserverFunc(track, sendIndex, varToStore)
+{
+    return function( value)
+    {
+        varToStore[sendIndex + track*8] = value;
+        }
+}
+
+
 
 function getGridObserverFunc(track, varToStore)
 {
@@ -196,6 +232,9 @@ function getGridObserverFunc(track, varToStore)
       varToStore[scene*8 + track] = value;
    }
 }
+
+
+
 
 //used to check variable number of tracks up to 32, This information is saved in array, which is used by round buttons to
 // set its light (yellow of green) whether all clips in scene are playing (yellow) or stopped (green)
@@ -210,8 +249,6 @@ function getGridObserverFuncAll(track, varToStore)
        }
    }
 }
-
-
 
 
 
@@ -329,11 +366,13 @@ function init()
 
       track.sendBank().itemCount().addValueObserver(function (value){numSends = value;});
 
-      for (var sendIndex = 0; sendIndex < NUM_SENDS; sendIndex++)
-      { //  track.sendBank().getItemAt(sendIndex).addValueObserver(63, getTrackObserverFunc(t, sends));//63 is range to scale value
+      //sends observer
+      for (var sendI = 0; sendI < NUM_SENDS ; sendI++)
+      {
+          track.sendBank().getItemAt(sendI).addValueObserver(128, getSendObserverFunc(t,sendI, sends));//128 is range to scale value
       }
 
-      //track.getVolume().addValueObserver(8, getTrackObserverFunc(t, volume));
+      track.getVolume().addValueObserver(128, getTrackObserverFunc(t, volumes));
       //track.getPan().addValueObserver(userVarPans, getTrackObserverFunc(t, pan));
       track.getMute().addValueObserver(getTrackObserverFunc(t, mute));
       track.getSolo().addValueObserver(getTrackObserverFunc(t, solo));
@@ -367,6 +406,12 @@ function init()
 
    cursorRCPage.pageNames().addValueObserver(function (value){
         numRCPages= value.length;} );
+
+
+   for (var rc=0;rc<8;rc++)
+        {
+            cursorRCPage.getParameter(rc).addValueObserver(128, getCursorRCObserverFunc(rc, cursorRCParameters) );
+        }
 
    cursorDevice.position().addValueObserver(function (value){
         cursorDevicePosition = value;}, -1 );
@@ -460,7 +505,7 @@ function updateIndications()
    for(var i=0; i<8; i++)
    {
       //cursorDevice.getParameter(i).setIndication(incontrol_knobs);
-      trackBank.getTrack(i).getVolume().setIndication(incontrol_mix);
+      trackBank.getChannel(i).getVolume().setIndication(incontrol_mix);
    }
 }
 

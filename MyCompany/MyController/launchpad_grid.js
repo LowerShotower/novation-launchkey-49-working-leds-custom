@@ -463,6 +463,7 @@ gridPage.scrollPot = gridPage.makeScrollPot();
 //knobs actions --------------------------------------------------------------------------------------------------------
 gridPage.onPots = function (inControl, data1, data2)
 {
+    var diff;
     var knobIndex = data1 - 21;
 	if (TEMPMODE == TempMode.EDIT || ( TEMPMODE == TempMode.DEVICE && isPopup) )
 	{
@@ -480,7 +481,26 @@ gridPage.onPots = function (inControl, data1, data2)
     {
         if(knobIndex<NUM_SENDS)
         {
-            trackBank.getTrack(sendBankIndex).sendBank().getItemAt(knobIndex).set(data2 / 128);
+            diff = data2-sends[sendBankIndex*8 + knobIndex];
+
+
+            if (diff < trashhold && diff > -trashhold)
+            {
+                trackBank.getChannel(sendBankIndex).sendBank().getItemAt(knobIndex).set(data2,128);
+
+                return;
+            }
+            else if (isScalingMode)
+            {
+                if(diff>0)
+                {
+                    trackBank.getChannel(sendBankIndex).sendBank().getItemAt(knobIndex).inc(scalingSpeedInSteps, 128);
+                }
+                else if(diff<0)
+                {
+                    trackBank.getChannel(sendBankIndex).sendBank().getItemAt(knobIndex).inc(-scalingSpeedInSteps, 128);
+                }
+            }
         }
     }
 
@@ -496,8 +516,29 @@ gridPage.onPots = function (inControl, data1, data2)
 		{
 			if (knobIndex >= 0 && knobIndex < 8)
 			{
-			    //println("knob" + knobIndex);
-				cursorRCPage.getParameter(knobIndex).set(data2, 128);
+                diff = (data2-cursorRCParameters[knobIndex]);
+
+                if (knobs[knobIndex].isCaptured)
+                {
+                    cursorRCPage.getParameter(knobIndex).set(data2,128);
+                    return;
+                }
+                if (diff< trashhold && diff > -trashhold)
+                {
+                    cursorRCPage.getParameter(knobIndex).set(data2,128);
+                    knobs[knobIndex].isCaptured = true;
+                }
+                else if (isScalingMode)
+                {
+                    if(diff>0)
+                    {
+                        cursorRCPage.getParameter(knobIndex).inc(scalingSpeedInSteps, 128);
+                    }
+                    else if(diff<0)
+                    {
+                        cursorRCPage.getParameter(knobIndex).inc(-scalingSpeedInSteps, 128);
+                    }
+                }
 			}
 		}
 	}
@@ -507,18 +548,54 @@ gridPage.onPots = function (inControl, data1, data2)
 //faders actions (and fader buttons as they are in !incontrol mode i.e while incontrol slider button off----------------
 gridPage.onFaders = function (inControl, data1, data2)
 {
+
     if(inControl == true)
     {
+        var diff;
         if (data1 >= 41 && data1 <= 48)
         {
             var sliderIndex = data1 - 41;
 
-            trackBank.getTrack(sliderIndex).getVolume().set(data2, 128);
+            diff = (data2-volumes[sliderIndex]);
+
+
+            if (diff< trashhold && diff > -trashhold)
+            {
+                trackBank.getChannel(sliderIndex).getVolume().set(data2, 128);
+
+            }
+            else if (isScalingMode)
+            {
+                if(diff>0)
+                {
+                    trackBank.getChannel(sliderIndex).getVolume().inc(scalingSpeedInSteps, 128);
+                }
+                else if(diff<0)
+                {
+                    trackBank.getChannel(sliderIndex).getVolume().inc(scalingSpeedInSteps, 128);
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
         else if (data1 == 7)
         {
             masterTrack.getVolume().set(data2, 128);
         }
+
 	}
     else if (inControl == false)
     {
@@ -538,7 +615,7 @@ gridPage.onFaders = function (inControl, data1, data2)
 
            if (data2 == 127)
            {
-               trackBank.getTrack(buttonIndex).select();
+               trackBank.getChannel(buttonIndex).select();
                host.getMidiOutPort(1).sendMidi(159, 14,127);
                incontrol_mix = true;
 
@@ -738,7 +815,7 @@ gridPage.onGridButton = function(row, column, isPressed)
       var track = column ;
       var scene = row ;
       var i = track + scene*8;
-      var t = trackBank.getTrack(track);
+      var t = trackBank.getChannel(track);
       var l = t.getClipLauncher();
 
       l.select(scene);
@@ -829,7 +906,7 @@ gridPage.onGridButton = function(row, column, isPressed)
 	   		switch (padNo) 
 	   		{
 	   			case 0:
-					//trackBank.getTrack(column).select();
+					//trackBank.getChannel(column).select();
                     cursorTrack.select();
                     application.remove();
                     host.showPopupNotification("remove");
@@ -921,7 +998,7 @@ gridPage.onGridButton = function(row, column, isPressed)
       switch(row)
 	  {
 		 case 1:
-			trackBank.getTrack(column).getSolo().toggle(true);
+			trackBank.getChannel(column).getSolo().toggle(true);
 			break;
    	  }
    	}
@@ -934,7 +1011,7 @@ gridPage.onGridButton = function(row, column, isPressed)
       switch(row)
 	  {
 		 case 1:
-			trackBank.getTrack(column).getMute().toggle();
+			trackBank.getChannel(column).getMute().toggle();
 			break;
    	  }
    	}
@@ -947,7 +1024,7 @@ gridPage.onGridButton = function(row, column, isPressed)
       switch(row)
 	  {
 		 case 1:
-			trackBank.getTrack(column).getArm().toggle();
+			trackBank.getChannel(column).getArm().toggle();
 			break;
    	  }
    	}
@@ -960,7 +1037,7 @@ gridPage.onGridButton = function(row, column, isPressed)
       switch(row)
 	  {
 		 case 1:
-			trackBank.getTrack(column).select();
+			trackBank.getChannel(column).select();
 			//application.selectNone();
 			break;
    	  }
@@ -975,7 +1052,7 @@ gridPage.onGridButton = function(row, column, isPressed)
 	    	  var track = column;
 		      var scene = row;
 		      var i = track + scene*8;
-		      var t = trackBank.getTrack(track);
+		      var t = trackBank.getChannel(track);
 		      var l = t.getClipLauncher();
 		      application.selectNone();
 		      l.select(scene);
@@ -1000,7 +1077,7 @@ gridPage.onGridButton = function(row, column, isPressed)
            var track = column;
            var scene = row;
 		      var i = track + scene*8;
-		      var t = trackBank.getTrack(track);
+		      var t = trackBank.getChannel(track);
 		      var l = t.getClipLauncher();
 		      application.selectAll();
 		      l.select(scene);
@@ -1342,7 +1419,7 @@ gridPage.setTempMode = function(mode)
    // This updates the indicators (The rainbow displays on dials for controlls (userControls number 3 is missing? from original script)
    for(var p=0; p<8; p++)
    {
-      var track = trackBank.getTrack(p);
+      var track = trackBank.getChannel(p);
       track.getVolume().setIndication(mode == TempMode.VOLUME);
       track.getPan().setIndication(mode == TempMode.PAN);
       userControls_0.getControl(p).setIndication(mode == TempMode.USER1);
