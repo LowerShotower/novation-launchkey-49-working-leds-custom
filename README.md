@@ -39,3 +39,5 @@ In bitwig there are two unrelated input devices: Launchpad 49 and Launchpad pads
 NEW_UPDATE__12_02_18: bug with auto shutdown of Master_btn as inControl_Prads_btn is pressed was fixed. Bug with  incorrect switching on off of drumpads/other modes was fixed. Popup browser scrolling was improved.
 
 NEW_UPDATE__13_02_2018: Take over mode for faders and knobs has been implemented. Test it please. Waiting for your feedbacks =)
+
+TODO: Scaling mode, device on/off,
