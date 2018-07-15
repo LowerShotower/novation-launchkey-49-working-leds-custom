@@ -30,20 +30,43 @@ Nav buttons move grid.
 
 Rec button starts metronome and overdub in clips.
 
-simple grid to launch, stop, rec, create, del clips. Used from start.
+#### Pad Colors
+* solid green - currently playing
+* blinking green - will play (or stop playing) on next transition
+  * press again to stop playing
+  * delete clip with Loop+Pad
+* solid yellow - available to play
+* solid red - recording
+* blinking white - available to record
+
 
 ### Drumpads
-simple drumpads for drumming. On as inControl_pad_button is pressed.
+Simple drumpads for drumming.
+
+Enabled when inControl button is off.
 
 ### Device
-manage with device section. Starts on press fb1(fader button 1). first_row of grid - remote_control's pages. Second row - devices. Up to 8 devices. Knobs manage remote_control's parameters. Rb1 (round button 1) used to add first or replace current device. If loop+rb1 - it will add new one after currently selected device. Rb2 delete current device (but it still work not ok, sometimes it doesn't delete[only after selecting a device with mouse in the bitwig it begin to work. Also such a problem happens when you try to delete track or copy, cut clip using launchkey. The problem is connected with selection. For example, if you want to delete clip via keyboard, and  track  is displayed in inspector in bitwig, then track will be deleted. I still don't know how appropreate make bitwig to change selection correctly though i searched through all the API to find the answer and tried to use any of avaliable functions. I will be glad if you share your guesswork with me])
+Manage with device section. Starts on press fader button 1 (fb1).
+
+First row of grid pad - remote control's pages.
+Second row of grid pad - select device (up to 8)
+
+* add first device - rb1
+* change device - rb1
+* add additional device after first - Loop+rb1
+* delete device - rb2 (sometimes buggy)
+
+Knobs manage remote_control's parameters.
+
+Rb2 deletes current device (but it still work not ok, sometimes it doesn't delete[only after selecting a device with mouse in the bitwig it begin to work. Also such a problem happens when you try to delete track or copy, cut clip using launchkey. The problem is connected with selection. For example, if you want to delete clip via keyboard, and  track is displayed in inspector in bitwig, then track will be deleted. I still don't know how appropreate make bitwig to change selection correctly though i searched through all the API to find the answer and tried to use any of avaliable functions. I will be glad if you share your guesswork with me])
 
 ### Edit
-used to navigate in Popup browser. Use knobs, grid buttons for this. Rb1, rb2 - chancel, commit.
+Used to navigate in Popup browser. Use knobs, grid buttons for this. Rb1, rb2 - chancel, commit.
 
 ### Arm, Solo, Mute, Select
 Modes activated by holding fb5, fb6, bb7, fb8.
 
+### Master Button
 Press Master_btn: then hold fb5 -cut mode; hold fb6 - copy mode. Use the grid to copy paste clips from slot to slot while holding fbs.
 
 Again, Master_btn on: press fb7 - Undo, press fb8 - redo.
