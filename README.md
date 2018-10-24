@@ -2,16 +2,37 @@
 Bitwig controller script for Novation Launchkey 49.  Working LEDs, knobs, sliders, and buttons.  All work a little bit different than original Ableton or Bitwig scripts.
 
 ## Installation
-Copy MyCompany directory to the appropriate location for your operating system.
+Copy `MyCompany` directory to the appropriate location for your operating system.
 
 * **Windows**: `%USERPROFILE%\Documents\Bitwig Studio\Controller Scripts\`
 * **Mac**: `~/Documents/Bitwig  Studio/Controller Scripts/`
 * **Linux**: `~/Bitwig Studio/Controller Scripts/`
 
-## Usage
-To change controllers behaviour I use several modes: Mix, Drumpads, Device, Cut, Copy, Edit, Solo, Mute, Arm, Select.
+## Hardware Layout
+### Drump Pads
+### Knobs
+### Sliders
+### Transport Controls
+### InControl Buttons
+#### Top
+#### Middle
+Turn off to use buttons to select tracks 1-8.
+Turn on to use faders to control track volume.
+#### Bottom
+Turn off to enable pads as drum input
+Turn on to make use of Pad Colors.
 
-Controller starts up in Mix mode.
+
+## Usage
+### Modes
+1. Mix (default at startup)
+1. Drumpads
+1. Devices
+1. Edit
+1. Solo/Mute
+1. Arm
+1. Select
+1. Cut/Copy
 
 
 Loop button works as shift button.  It is used in the following ways:
@@ -21,31 +42,28 @@ Loop button works as shift button.  It is used in the following ways:
 3. will be described below.
 
 
-### Mix
+#### Mix
 Main grid in mix mode has two rows i.e. 16 pads. You can create, record, start, stop, and delete clips by pushing pads.
 
 Round buttons (RB) launch/stop the whole scene.
 
-Nav buttons move grid.
+Move grid using the forward/backward navigation buttons (forward/backward buttons in 6-button group on the right of the keyboard).
 
 Rec button starts metronome and overdub in clips.
 
-#### Pad Colors
+##### Pad Colors
 * solid green - currently playing
 * blinking green - will play (or stop playing) on next transition
   * press again to stop playing
-  * delete clip with Loop+Pad
 * solid yellow - available to play
+  * delete clip with Loop+Pad
 * solid red - recording
 * blinking white - available to record
 
+#### Drumpads
+Enabled when bottom inControl button is off.
 
-### Drumpads
-Simple drumpads for drumming.
-
-Enabled when inControl button is off.
-
-### Device
+#### Devices
 Manage with device section. Starts on press fader button 1 (fb1).
 
 First row of grid pad - remote control's pages.
@@ -60,20 +78,37 @@ Knobs manage remote_control's parameters.
 
 Rb2 deletes current device (but it still work not ok, sometimes it doesn't delete[only after selecting a device with mouse in the bitwig it begin to work. Also such a problem happens when you try to delete track or copy, cut clip using launchkey. The problem is connected with selection. For example, if you want to delete clip via keyboard, and  track is displayed in inspector in bitwig, then track will be deleted. I still don't know how appropreate make bitwig to change selection correctly though i searched through all the API to find the answer and tried to use any of avaliable functions. I will be glad if you share your guesswork with me])
 
-### Edit
+#### Edit
 Used to navigate in Popup browser. Use knobs, grid buttons for this. Rb1, rb2 - chancel, commit.
 
-### Arm, Solo, Mute, Select
-Modes activated by holding fb5, fb6, bb7, fb8.
+#### Arm, Solo, Mute, Select
+Modes activated by holding fb5, fb6, fb7, fb8.
 
-### Master Button
-Press Master_btn: then hold fb5 -cut mode; hold fb6 - copy mode. Use the grid to copy paste clips from slot to slot while holding fbs.
+#### Arm
+Modes activated by holding fb5.
 
-Again, Master_btn on: press fb7 - Undo, press fb8 - redo.
+#### Solo/Mute
+Modes activated by holding fb6 or fb7.
 
-Faders control volume of tracks in inControl state.
+#### Select
+Activated by holding fb8.
 
-If you switch off inControl_faders_btn , then fb 1-8 will be used to select track 1-8 in the grid.
+#### Cut/Copy
+Use the grid to copy paste clips from slot to slot while holding fbs.
+Press Master_btn, then:
+* hold fb5 -cut mode
+* hold fb6 - copy mode
+* press fb7 - undo
+* press fb8 - redo
+
+### InControl Buttons
+#### Top
+#### Middle
+Turn off to use buttons to select tracks 1-8.
+Turn on to use faders to control track volume.
+#### Bottom
+Turn off to enable pads as drum input
+Turn on to make use of Pad Colors.
 
 
 ## Updates
