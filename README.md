@@ -21,6 +21,8 @@ Turn on to use faders to control track volume.
 #### Bottom
 Turn off to enable pads as drum input
 Turn on to make use of Pad Colors.
+### 2 Track/MIDI Channel buttons
+### 2 full-colour RGB backlit round buttons
 
 
 ## Usage
