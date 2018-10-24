@@ -15,12 +15,15 @@ Copy `MyCompany` directory to the appropriate location for your operating system
 ### Transport Controls
 ### InControl Buttons
 #### Top
+
 #### Middle
 Turn off to use buttons to select tracks 1-8.
 Turn on to use faders to control track volume.
+
 #### Bottom
 Turn off to enable pads as drum input
 Turn on to make use of Pad Colors.
+
 ### 2 Track/MIDI Channel buttons
 ### 2 full-colour RGB backlit round buttons
 
@@ -98,6 +101,7 @@ Activated by holding fb8.
 #### Cut/Copy
 Use the grid to copy paste clips from slot to slot while holding fbs.
 Press Master_btn, then:
+
 * hold fb5 -cut mode
 * hold fb6 - copy mode
 * press fb7 - undo
