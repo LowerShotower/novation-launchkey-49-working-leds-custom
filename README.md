@@ -24,11 +24,41 @@ Turn on to use faders to control track volume.
 Turn off to enable pads as drum input
 Turn on to make use of Pad Colors.
 
+### Master Button
+#### Cut/Copy
+Use the grid to copy paste clips from slot to slot while holding fbs.
+Press Master_btn, then:
+
+* hold fb5 -cut mode
+* hold fb6 - copy mode
+* press fb7 - undo
+* press fb8 - redo
+
+#### Master_btn__off:
+
+* fb1 - device
+* fb2 - send
+* fb3 - none
+* fb4 - layout
+* fb5, 6, 7, 8 - as usual. 
+
+#### Master_btn__on:
+
+* fb1 - cut
+* fb2 - copy
+* fb3 - create new instrument track
+* fb4 - color
+* fb5 - none
+* fb6 - quantize
+* fb7, 8 - as usual. 
+
 ### 2 Track/MIDI Channel buttons
 ### 2 full-colour RGB backlit round buttons
 
 
 ## Usage
+In Bitwig you can find two unrelated input devices: Launchpad 49 and Launchpad pads.
+
 ### Modes
 1. Mix (default at startup)
 1. Drumpads
@@ -107,16 +137,6 @@ Press Master_btn, then:
 * press fb7 - undo
 * press fb8 - redo
 
-### InControl Buttons
-#### Top
-#### Middle
-Turn off to use buttons to select tracks 1-8.
-Turn on to use faders to control track volume.
-#### Bottom
-Turn off to enable pads as drum input
-Turn on to make use of Pad Colors.
-
-
 ## Updates
 ### 09 Feb 2018
 Send section was implemented. It is switched on/off by pressing fader_button_2. Also some constant colours were replaced.  Getting the color of tracks was implemented. It is switched on/off by pressing fader_button_3. 
@@ -126,34 +146,5 @@ Master_button indication after device is switched off/on has been fixed.  Switch
 
 Holding Loop_btn, then pressing rb1 or rb2 while clips in two scenes are playing will stop playing clips ONLY in the appropriate scene.
 
-Keybindings have been changed:
-
-Master_btn__off:
-
-* fb1 - device
-* fb2 - send
-* fb3 - none
-* fb4 - layout
-* fb5, 6, 7, 8 - as usual. 
-
-Master_btn__on:
-
-* fb1 - cut
-* fb2 - copy
-* fb3 - create new instrument track
-* fb4 - color
-* fb5 - none
-* fb6 - quantize
-* fb7, 8 - as usual. 
-
-In Bitwig you can find two unrelated input devices: Launchpad 49 and Launchpad pads.
-
-### 12 Feb 2018
-Bug with auto shutdown of Master_btn as inControl_Prads_btn is pressed was fixed. Bug with  incorrect switching on off of drumpads/other modes was fixed. Popup browser scrolling was improved.
-
 ### 13 Feb 2018
 Take over mode for faders and knobs has been implemented. Test it please. Waiting for your feedback. =)
-
-## TODO
-1. Scaling mode
-1. Device on/off
